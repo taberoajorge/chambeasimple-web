@@ -62,7 +62,7 @@ La agenda SHALL exponer solo dos operaciones: consultar horarios libres (bloques
 ### Requirement: Protección contra spam y abuso
 La creación de reservas SHALL exigir:
 - Cloudflare Turnstile, gratuito e invisible para la mayoría;
-- un límite por IP con el binding de Rate Limiting de Workers (por defecto, 5 intentos cada 10 minutos);
+- un límite por IP con el binding de Rate Limiting de Workers (5 intentos por minuto: el binding solo admite periodos de 10 o 60 segundos);
 - un campo trampa;
 - validación en el servidor;
 - como máximo 2 reservas por correo cada 7 días;
@@ -73,7 +73,7 @@ Los horarios libres MUST servirse desde caché por 5 minutos, para que una ráfa
 
 #### Scenario: Ráfaga de reservas falsas
 - **WHEN** un script envía 100 reservas en un minuto desde una IP
-- **THEN** a partir del sexto intento recibe 429, no se crea ningún evento extra, y Google no recibe más de 5 consultas
+- **THEN** a partir del sexto intento recibe 429, y ninguna reserva sin trampas superadas llega a Google
 
 ### Requirement: Costo cero
 

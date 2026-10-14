@@ -146,7 +146,9 @@ jobs:
       - run: pnpm build
       - name: Deploy
         id: deploy
-        run: pnpm exec wrangler deploy --message "$(git log -1 --format=%s)"
+        run: |
+          pnpm exec wrangler deploy --message "$(git log -1 --format=%s)"
+          pnpm exec wrangler deploy --config agenda/wrangler.jsonc --message "$(git log -1 --format=%s)"
       - name: Smoke test production
         run: |
           sleep 10

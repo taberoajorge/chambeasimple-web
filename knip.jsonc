@@ -4,11 +4,12 @@
   "entry": [
     "scripts/{agent-hooks,commit-msg,delivery,port,run}.ts",
     "scripts/checks/{boundaries,parity,perf,seo}.ts",
-    "{src,scripts,worker}/**/*.test.ts",
+    "{src,scripts,worker,agenda}/**/*.test.ts",
+    "agenda/src/index.ts",
     "worker/index.ts",
     ".opencode/plugins/*.ts"
   ],
   // entry files are scripts, not libraries: their exports must be used too
   "includeEntryExports": true,
-  "project": ["src/**/*.{ts,astro,css}", "scripts/**/*.ts", "worker/**/*.ts"]
+  "project": ["src/**/*.{ts,astro,css}", "scripts/**/*.ts", "worker/**/*.ts", "agenda/**/*.ts"]
 }

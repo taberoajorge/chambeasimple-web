@@ -21,7 +21,7 @@ const HEADERS: Record<string, string> = {
   // script, injected or not, does not run.
   // Styles are inlined by the build; JSON-LD is data, not script, and is not affected.
   'Content-Security-Policy':
-    "default-src 'self'; script-src 'sha256-8r2NCdnVgfKJyshnqagcI979A5PuClh5VqNwCQDELlk='; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'self' https://agenda.chambasimple.com; frame-ancestors 'none'; upgrade-insecure-requests",
+    "default-src 'self'; script-src 'sha256-p3mhDqiwtgsUvR6GI+J8dYJW1WTgh7mgc8elhjs+BgE='; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'self' https://agenda.chambasimple.com; frame-ancestors 'none'; upgrade-insecure-requests",
 };
 
 // A page URL (no extension) maps to its Markdown twin: / → /index.md, /en → /en.md.

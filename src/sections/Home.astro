@@ -41,7 +41,7 @@ const contact = mailto(t.cta.mailSubject, t.cta.mailBody);
     <p class="mt-4 text-sm text-muted">{t.hero.note}</p>
   </div>
   <!-- Desktop only: the method at a glance. The full section below says it again for everyone. -->
-  <div aria-hidden="true" class="hidden rounded-3xl border border-line bg-surface p-8 lg:block">
+  <div aria-hidden="true" class="hidden rounded-3xl border border-line bg-card p-8 lg:block">
     <p class="text-sm font-bold tracking-wide text-accent uppercase">{t.process.title}</p>
     <ol class="mt-6 space-y-5">
       {
@@ -75,7 +75,7 @@ const contact = mailto(t.cta.mailSubject, t.cta.mailBody);
             return (
               <li>
                 {/* A light plate in both themes: logos are drawn for white backgrounds. */}
-                <a href={href} class="flex min-h-11 items-center rounded-xl border border-line bg-white px-4 py-2 hover:border-accent">
+                <a href={href} class="flex min-h-11 items-center rounded-xl border border-line bg-plate px-4 py-2 hover:border-accent">
                   {c.logo ? (
                     <img src={c.logo.src} width={c.logo.width} height={c.logo.height} alt={c.name} loading="lazy" decoding="async" class="h-12 w-auto" />
                   ) : (
@@ -134,7 +134,7 @@ const contact = mailto(t.cta.mailSubject, t.cta.mailBody);
       ))
     }
   </CardGrid>
-  <div class="mt-8 rounded-2xl border border-line bg-surface p-6 md:p-8">
+  <div class="mt-8 rounded-2xl border border-line bg-card p-6 md:p-8">
     <h3 class="text-xl font-bold">{t.process.pricing.title}</h3>
     <ul class="mt-4 grid gap-2 text-muted md:grid-cols-3 md:gap-6">
       {t.process.pricing.items.map((item) => <li>{item}</li>)}
@@ -224,14 +224,14 @@ const contact = mailto(t.cta.mailSubject, t.cta.mailBody);
   </div>
 </Section>
 
-<section aria-labelledby="contact-h" class="border-t border-line bg-ink text-[#effbf6]">
+<section aria-labelledby="contact-h" class="border-t border-line bg-band text-band-text">
   <div class="mx-auto max-w-6xl px-5 py-16 text-center md:px-8 md:py-24">
     <h2 id="contact-h" class="text-3xl font-extrabold tracking-tight text-balance md:text-4xl">
       {t.contact.title}
     </h2>
-    <p class="mx-auto mt-4 max-w-xl text-lg text-[#a3b8b0]">{t.contact.body}</p>
+    <p class="mx-auto mt-4 max-w-xl text-lg text-band-muted">{t.contact.body}</p>
     <a href={contact} class="btn-primary mt-8">{t.cta.primary}</a>
-    <p class="mt-4 text-[#a3b8b0]">
+    <p class="mt-4 text-band-muted">
       {t.contact.email}{' '}
       <a href={`mailto:${SITE.email}`} class="font-semibold text-mint underline underline-offset-4"
         >{SITE.email}</a

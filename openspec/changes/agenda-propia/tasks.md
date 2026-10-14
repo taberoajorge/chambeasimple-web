@@ -7,10 +7,12 @@
 
 ## 2. Worker
 
-- [ ] 2.1 Crear `agenda/` con `wrangler.toml`, el Worker, el cálculo de bloques (horario laboral, anticipación, horizonte, zonas horarias) y sus tests. Se verifica con tests del cálculo: dos calendarios, cambio de día, Lima y Ciudad de México.
-- [ ] 2.2 Implementar la reserva: validación en el servidor, candado en KV, nueva consulta de disponibilidad y `events.insert`. Se verifica con tests contra un Google simulado (bloque tomado, entrada inválida, éxito) y una reserva real en la vista previa.
-- [ ] 2.2b Añadir Turnstile, Rate Limiting por IP, campo trampa, límite por correo y caché de horarios. Se verifica con tests (ráfaga de 100 envíos, correo repetido, token de Turnstile inválido) y con una prueba de que ninguna ruta devuelve datos de reservas.
-- [ ] 2.3 Añadir la revisión diaria del token y la alternativa por correo. Se verifica con un test del token inválido y con la página mostrando el correo.
+- [x] 2.1 Crear `agenda/` con `wrangler.jsonc`, el Worker, el cálculo de bloques (horario laboral, anticipación, horizonte, zonas horarias) y sus tests. Se verifica con tests del cálculo: dos calendarios, cambio de día, Lima y Ciudad de México.
+- [x] 2.2 Implementar la reserva: validación en el servidor, candado en KV, nueva consulta de disponibilidad y `events.insert`. Se verifica con tests contra un Google simulado (bloque tomado, entrada inválida, éxito) y una reserva real en la vista previa.
+- [x] 2.2b Añadir Turnstile, Rate Limiting por IP, campo trampa, límite por correo y caché de horarios. Se verifica con tests (ráfaga de 100 envíos, correo repetido, token de Turnstile inválido) y con una prueba de que ninguna ruta devuelve datos de reservas.
+- [x] 2.3 Añadir la revisión diaria del token y la alternativa por correo. Se verifica con un test del token inválido y con la página mostrando el correo.
+
+(2026-10-14: 25 tests en `agenda/src`: horarios en Lima y Ciudad de México, Google simulado, trampas, límites, escape de HTML, rutas que no existen, token caído. Turnstile queda listo y se activa al poner su clave. La reserva real en la vista previa espera las credenciales de Google, 1.1 y 1.2. Desplegada en `chambeasimple-agenda.tools-tc136.workers.dev`; sin credenciales muestra el correo.)
 
 ## 3. Página
 
