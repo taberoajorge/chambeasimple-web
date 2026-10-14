@@ -4,17 +4,15 @@ import { test } from 'node:test';
 
 // Reads the theme tokens straight from global.css, so the test checks what ships.
 const css = readFileSync(new URL('./global.css', import.meta.url), 'utf8');
-const block = (selector: RegExp) => selector.exec(css)?.[1] ?? '';
-const tokens = (text: string) =>
+// Tokens are a plain color (same in both themes) or light-dark(light, dark).
+const root = /:root \{([\s\S]*?)\n\}/.exec(css)?.[1] ?? '';
+const TOKEN = /--([\w-]+):\s*(?:light-dark\((#[0-9a-f]{6}),\s*(#[0-9a-f]{6})\)|(#[0-9a-f]{6}))/gi;
+const theme = (side: 'light' | 'dark') =>
   Object.fromEntries(
-    [...text.matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})/gi)].map(([, k, v]) => [k, v]),
+    [...root.matchAll(TOKEN)].map(([, k, l, d, both]) => [k, both ?? (side === 'light' ? l : d)]),
   );
-
-const light = tokens(block(/:root \{([\s\S]*?)\}/));
-const dark = {
-  ...light,
-  ...tokens(block(/prefers-color-scheme: dark\) \{\s*:root \{([\s\S]*?)\}/)),
-};
+const light = theme('light');
+const dark = theme('dark');
 
 const luminance = (hex: string) => {
   const [r, g, b] = [1, 3, 5].map((i) => {
@@ -48,4 +46,10 @@ test('mint is never text on the light background', () => {
     'if this fails, the rule in global.css can be relaxed',
   );
   assert.notEqual(light.accent, light.mint);
+});
+
+test('every color token is read in both themes', () => {
+  for (const k of ['bg', 'surface', 'text', 'muted', 'accent', 'line', 'ink', 'mint'])
+    assert.ok(light[k] && dark[k], `--${k} missing`);
+  assert.notEqual(light.bg, dark.bg);
 });

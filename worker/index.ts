@@ -17,10 +17,11 @@ const HEADERS: Record<string, string> = {
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
   'X-Frame-Options': 'DENY',
-  // The site runs no JavaScript at all, so no script may run: an injected one would be inert.
+  // The only script allowed is the theme switch, by its hash (src/layouts/theme.ts): any other
+  // script, injected or not, does not run.
   // Styles are inlined by the build; JSON-LD is data, not script, and is not affected.
   'Content-Security-Policy':
-    "default-src 'self'; script-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'self' https://agenda.chambasimple.com; frame-ancestors 'none'; upgrade-insecure-requests",
+    "default-src 'self'; script-src 'sha256-8r2NCdnVgfKJyshnqagcI979A5PuClh5VqNwCQDELlk='; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'self' https://agenda.chambasimple.com; frame-ancestors 'none'; upgrade-insecure-requests",
 };
 
 // A page URL (no extension) maps to its Markdown twin: / → /index.md, /en → /en.md.

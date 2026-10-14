@@ -6,10 +6,11 @@ export const en: Content = {
   meta: {
     title: 'Chambea Simple · Custom software for companies',
     description:
-      'Custom software for companies in Peru, Mexico and beyond: AI research, client follow-up, internal tools and integrations. We test with your data first.',
+      'Custom software for companies in Peru, Mexico and beyond: AI research, client follow-up, internal tools and integrations. You see it working small first.',
   },
   nav: {
     skip: 'Skip to content',
+    theme: 'Dark theme',
     label: 'Main',
     switchTo: { label: 'Español', lang: 'es' },
   },
@@ -21,9 +22,9 @@ export const en: Content = {
   hero: {
     title: 'Custom software for companies',
     lema: 'We build software for good work.',
-    lead: 'For teams that do by hand what a system could do for them: finding clients, following up, keeping operations in order or connecting their tools. First we learn how you work; then we build in stages, testing with real data.',
+    lead: 'For teams that do by hand what a system could do for them: finding clients, following up, keeping operations in order or connecting their tools. First we learn how you work; then we build in stages, and at each one you see the progress working.',
     secondary: 'See case studies',
-    note: 'The first conversation is free. Before building, we test with your data.',
+    note: 'The first conversation is free. Before you invest in the whole system, you see it working small.',
   },
   clients: {
     title: 'Companies we work with',
@@ -75,9 +76,9 @@ export const en: Content = {
         gets: 'A proposal with stages, deliverables and a price per stage.',
       },
       {
-        title: 'A test with real data',
-        body: 'Before building, we test the idea with your data.',
-        gets: 'A decision point: go on, adjust or stop.',
+        title: 'A small version first',
+        body: 'Before building everything, we make a small version that works on real cases from your company.',
+        gets: 'You see it working and decide: go on, adjust or stop.',
       },
       {
         title: 'Building in stages',
@@ -125,7 +126,7 @@ export const en: Content = {
     id: 'ai-ideas',
     title: 'Have an AI idea? We build it',
     intro:
-      "Most AI projects don't fail because of the model, but because of how they fit into daily work. So we start with a test on your data, and you decide with that result in hand.",
+      "Most AI projects don't fail because of the model, but because of how they fit into daily work. So we start with a small version that works on real cases from your company: you see it working and decide from there.",
     fact: '95% of generative AI pilots show no measurable financial impact.',
     source: {
       label: 'MIT NANDA (2025), cited by the Stanford Digital Economy Lab (2026)',
@@ -146,7 +147,7 @@ export const en: Content = {
       items: [
         'Decisions nobody reviews: AI proposes, a person approves.',
         "Results without data: if the information doesn't exist or is a mess, we sort it out first.",
-        'Zero errors: in the test we measure how often it is wrong and tell you.',
+        'Zero errors: in the small version we measure how often it is wrong and tell you.',
         'Replacing the judgment of a lawyer, an accountant or a doctor.',
       ],
     },
@@ -158,8 +159,8 @@ export const en: Content = {
     title: 'Why work with us',
     items: [
       {
-        title: 'We test before we build',
-        body: "Before building, we test the idea with your real data. If it doesn't deliver, we tell you and decide together whether to adjust or stop.",
+        title: 'You see it working before you invest',
+        body: "Before building the whole system, we make a small version with real cases from your company. If it doesn't deliver, we tell you and decide together whether to adjust or stop, before you invest in the rest.",
       },
       {
         title: 'The code is yours',
@@ -211,8 +212,8 @@ export const en: Content = {
         a: 'The services the system needs to run, such as servers, AI or data sources. They are in your company’s name and we estimate their cost before we start.',
       },
       {
-        q: "What if the test doesn't work?",
-        a: "That's why we test before building. If the test with your data doesn't deliver, we decide together whether to change the approach or stop there.",
+        q: "What if the small version doesn't work?",
+        a: "That's why we make it first. If it doesn't deliver on your real cases, we decide together whether to change the approach or stop there, without you paying for the whole system.",
       },
       {
         q: 'What do you need from us?',

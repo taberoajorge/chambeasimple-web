@@ -4,26 +4,25 @@
    (measured in src/styles/contrast.test.ts). Mint is never text on a light background (1.4:1):
    it is the fill of the one primary button, with ink text on it, in both themes. */
 :root {
+  /* Each color is light-dark(light, dark): the visitor's system decides, unless they pick a theme
+     with the header button (data-theme, set by src/layouts/theme.ts before first paint). */
   color-scheme: light dark;
   --ink: #02130f;
   --mint: #62f0bb;
-  --bg: #f7fbf9;
-  --surface: #ffffff;
-  --text: #02130f;
-  --muted: #4a5e57;
-  --accent: #0a6b4b;
-  --line: #d5e3dd;
+  --bg: light-dark(#f7fbf9, #02130f);
+  --surface: light-dark(#ffffff, #0b231c);
+  --text: light-dark(#02130f, #effbf6);
+  --muted: light-dark(#4a5e57, #a3b8b0);
+  --accent: light-dark(#0a6b4b, #62f0bb);
+  --line: light-dark(#d5e3dd, #1f3a31);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #02130f;
-    --surface: #0b231c;
-    --text: #effbf6;
-    --muted: #a3b8b0;
-    --accent: #62f0bb;
-    --line: #1f3a31;
-  }
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 @media (prefers-contrast: more) {

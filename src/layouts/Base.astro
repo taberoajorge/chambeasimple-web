@@ -2,6 +2,7 @@
 import type { Content } from '../content/es.ts';
 import { invoicing, type Lang, mailto, PATHS, SITE } from '../content/site.ts';
 import '../styles/global.css';
+import { THEME_SCRIPT } from './theme.ts';
 
 interface Props {
   t: Content;
@@ -24,6 +25,7 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script is:inline set:html={THEME_SCRIPT} />
     <title>{title}</title>
     <meta name="description" content={description}>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -67,6 +69,18 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
   </li>
 ))}
           </ul>
+          <button
+            id="theme"
+            type="button"
+            hidden
+            aria-pressed="false"
+            class="flex min-h-11 min-w-11 items-center justify-center rounded-full text-text hover:text-accent"
+          >
+            <span class="sr-only">{t.nav.theme}</span>
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+            </svg>
+          </button>
           <a
             href={paths[other]}
             hreflang={other}

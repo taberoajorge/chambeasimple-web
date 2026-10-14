@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { PATHS } from '../src/content/site.ts';
+import { THEME_SCRIPT } from '../src/layouts/theme.ts';
 import worker, { pointOf, twinOf, visitorOf } from './index.ts';
 
 // A fake assets binding: serves a few files by path.
@@ -135,8 +137,12 @@ test('every kind of page is a run_worker_first route', () => {
   );
 });
 
-test('no script may run, and the real domain is HTTPS-only', async () => {
+test('only the theme script may run, and the real domain is HTTPS-only', async () => {
   const res = await get('https://chambasimple.com/');
-  assert.match(res.headers.get('content-security-policy') ?? '', /script-src 'none'/);
+  const hash = createHash('sha256').update(THEME_SCRIPT).digest('base64');
+  assert.ok(
+    (res.headers.get('content-security-policy') ?? '').includes(`script-src 'sha256-${hash}'`),
+    `the CSP must allow exactly the theme script: sha256-${hash}`,
+  );
   assert.match(res.headers.get('strict-transport-security') ?? '', /max-age=31536000/);
 });
