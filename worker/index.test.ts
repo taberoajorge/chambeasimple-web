@@ -152,3 +152,8 @@ test('www redirects for good to the apex, keeping path and query', async () => {
   assert.equal(res.status, 308);
   assert.equal(res.headers.get('location'), 'https://chambasimple.com/en?utm_source=x');
 });
+
+test('pages tell Cloudflare not to transform them (no injected scripts)', async () => {
+  const res = await get('https://chambasimple.com/');
+  assert.match(res.headers.get('cache-control') ?? '', /no-transform/);
+});

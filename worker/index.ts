@@ -72,6 +72,10 @@ function finish(response: Response, url: URL) {
   const out = new Response(response.body, response);
   for (const [k, v] of Object.entries(HEADERS)) out.headers.set(k, v);
   out.headers.append('Vary', 'Accept');
+  // no-transform: Cloudflare must not rewrite our pages (its zone features inject scripts, like the
+  // RUM beacon, that break the zero-JS budget and trip the CSP).
+  const cache = out.headers.get('Cache-Control');
+  out.headers.set('Cache-Control', cache ? `${cache}, no-transform` : 'no-transform');
   if (url.hostname !== DOMAIN) out.headers.set('X-Robots-Tag', 'noindex');
   else out.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   return out;
