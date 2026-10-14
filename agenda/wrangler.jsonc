@@ -3,6 +3,7 @@
   "name": "chambeasimple-agenda",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-14",
+  "routes": [{ "pattern": "agenda.chambasimple.com", "custom_domain": true }],
   "workers_dev": true,
   "preview_urls": true,
   // Locks, the 5-minute busy cache, per-email counters (hashed) and the token health flag.

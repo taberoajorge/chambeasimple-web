@@ -4,6 +4,11 @@
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-14",
   // workers.dev stays on for previews (each PR gets pr-<n>-…); production moves to chambasimple.com.
+  // Production on the real domain (needs the zone active in Cloudflare). www only redirects.
+  "routes": [
+    { "pattern": "chambasimple.com", "custom_domain": true },
+    { "pattern": "www.chambasimple.com", "custom_domain": true }
+  ],
   "workers_dev": true,
   "preview_urls": true,
   "assets": {

@@ -97,6 +97,11 @@ async function respond(request: Request, env: Env, url: URL): Promise<Response> 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    // One host: www.chambasimple.com redirects for good to the apex, path and query kept.
+    if (url.hostname === `www.${DOMAIN}`) {
+      url.hostname = DOMAIN;
+      return Response.redirect(url.href, 308);
+    }
     const response = await respond(request, env, url);
     if (request.method === 'GET')
       env.VISITS?.writeDataPoint(pointOf(request, url, response.status));

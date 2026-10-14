@@ -146,3 +146,9 @@ test('only the theme script may run, and the real domain is HTTPS-only', async (
   );
   assert.match(res.headers.get('strict-transport-security') ?? '', /max-age=31536000/);
 });
+
+test('www redirects for good to the apex, keeping path and query', async () => {
+  const res = await get('https://www.chambasimple.com/en?utm_source=x');
+  assert.equal(res.status, 308);
+  assert.equal(res.headers.get('location'), 'https://chambasimple.com/en?utm_source=x');
+});
