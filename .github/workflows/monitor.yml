@@ -28,11 +28,14 @@ jobs:
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
       - name: Smoke test
+        shell: bash # -eo pipefail: a failure before | tee still fails the step
         run: node scripts/checks/smoke.ts "$SITE_URL" | tee "$RUNNER_TEMP/report.txt"
       - name: Agenda health (the Google token)
         if: env.AGENDA_URL != ''
+        shell: bash
         run: curl -sf "$AGENDA_URL/health" | tee -a "$RUNNER_TEMP/report.txt"
       - name: Lighthouse (Mondays and manual runs)
+        shell: bash
         run: |
           if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] || [ "$(date -u +%u)" = 1 ]; then
             pnpm perf --ci --url "$SITE_URL" 2>&1 | tee -a "$RUNNER_TEMP/report.txt"

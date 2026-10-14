@@ -104,6 +104,7 @@ jobs:
           echo "url=$url" >> "$GITHUB_OUTPUT"
       - name: Smoke and Lighthouse on the preview
         if: steps.upload.outputs.url != ''
+        shell: bash # -eo pipefail: a failure before | tee still fails the step
         env:
           URL: ${{ steps.upload.outputs.url }}
         run: |
@@ -150,6 +151,7 @@ jobs:
           pnpm exec wrangler deploy --message "$(git log -1 --format=%s)"
           pnpm exec wrangler deploy --config agenda/wrangler.jsonc --message "$(git log -1 --format=%s)"
       - name: Smoke test production
+        shell: bash
         run: |
           sleep 10
           node scripts/checks/smoke.ts "$SITE_URL" | tee -a "$GITHUB_STEP_SUMMARY"
@@ -157,5 +159,6 @@ jobs:
         if: failure() && steps.deploy.outcome == 'success'
         run: pnpm exec wrangler rollback --message "smoke test failed on $GITHUB_SHA" --yes
       - name: Lighthouse on production
+        shell: bash
         run: |
           { echo '```'; pnpm perf --ci --url "$SITE_URL" 2>&1; echo '```'; } | tee -a "$GITHUB_STEP_SUMMARY"
