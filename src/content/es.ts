@@ -242,6 +242,32 @@ export const es = {
     body: 'Puede que el enlace haya cambiado. Vuelve al inicio o escríbenos y te ayudamos.',
     home: 'Ir al inicio',
   },
+  privacy: {
+    title: 'Privacidad',
+    description:
+      'Qué datos trata Chambea Simple: sin cookies ni rastreo, visitas medidas sin identificar a nadie, y tus derechos sobre los datos que nos das.',
+    updated: 'Actualizado el 14 de octubre de 2026.',
+    sections: [
+      {
+        title: 'Sin cookies ni rastreo',
+        body: 'Este sitio no usa cookies, no carga píxeles de anuncios ni scripts de analítica, y no te sigue a otros sitios.',
+      },
+      {
+        title: 'Qué medimos',
+        body: 'Por cada página vista, nuestro servidor anota la página, el sitio desde el que llegaste, la campaña (si el enlace la trae), el país y si la visita parece de una persona, de un bot o de un agente de IA. No guardamos tu IP ni nada que te identifique.',
+      },
+      {
+        title: 'Si nos escribes o agendas',
+        body: 'Usamos tu nombre, tu empresa, tu correo y lo que nos cuentes solo para responderte y preparar la conversación. Una reserva vive en nuestro calendario de Google; no la compartimos ni la vendemos. Solo con tu permiso, marcado aparte, avisamos a una plataforma de anuncios que una visita terminó en reserva.',
+      },
+      {
+        title: 'Tus derechos',
+        body: 'Puedes pedirnos ver, corregir o borrar tus datos, u oponerte a su uso (derechos ARCO, Ley 29733 en el Perú y LFPDPPP en México), escribiendo a hola@chambasimple.com. Respondemos en un plazo máximo de 10 días hábiles.',
+      },
+    ],
+    draft: 'Borrador pendiente de revisión legal.',
+    link: 'Privacidad',
+  },
   footer: {
     rights: 'Chambea Simple',
     inFormation: 'Empresa en constitución.',

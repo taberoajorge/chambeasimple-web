@@ -242,6 +242,32 @@ export const en: Content = {
     body: 'The link may have changed. Go back home or write to us and we will help.',
     home: 'Go home',
   },
+  privacy: {
+    title: 'Privacy',
+    description:
+      'What data Chambea Simple handles: no cookies or tracking, visits measured without identifying anyone, and your rights over the data you give us.',
+    updated: 'Updated on October 14, 2026.',
+    sections: [
+      {
+        title: 'No cookies, no tracking',
+        body: 'This site uses no cookies, loads no ad pixels or analytics scripts, and does not follow you to other sites.',
+      },
+      {
+        title: 'What we measure',
+        body: 'For each page view our server records the page, the site you came from, the campaign (if the link carries one), the country, and whether the visit looks like a person, a bot or an AI agent. We do not store your IP or anything that identifies you.',
+      },
+      {
+        title: 'If you write to us or book a call',
+        body: 'We use your name, company, email and what you tell us only to answer you and prepare the conversation. A booking lives in our Google Calendar; we do not share or sell it. Only with your separate permission do we tell an ad platform that a visit ended in a booking.',
+      },
+      {
+        title: 'Your rights',
+        body: 'You can ask us to see, correct or delete your data, or object to its use (Peru: Ley 29733; Mexico: LFPDPPP), by writing to hola@chambasimple.com. We answer within 10 business days.',
+      },
+    ],
+    draft: 'Draft pending legal review.',
+    link: 'Privacy',
+  },
   footer: {
     rights: 'Chambea Simple',
     inFormation: 'Company being incorporated.',

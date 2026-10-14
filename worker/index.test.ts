@@ -120,7 +120,14 @@ test('every kind of page is a run_worker_first route', () => {
   const routes: string[] = config.assets.run_worker_first;
   const covered = (path: string) =>
     routes.some((r) => (r.endsWith('/*') ? path.startsWith(r.slice(0, -1)) : path === r));
-  for (const path of [PATHS.es.home, PATHS.en.home, PATHS.es.case('x'), PATHS.en.case('x')])
+  for (const path of [
+    PATHS.es.home,
+    PATHS.en.home,
+    PATHS.es.privacy,
+    PATHS.en.privacy,
+    PATHS.es.case('x'),
+    PATHS.en.case('x'),
+  ])
     assert.ok(covered(path), `${path} is not in run_worker_first`);
   assert.ok(
     !covered('/favicon.svg') && !covered('/llms.txt'),

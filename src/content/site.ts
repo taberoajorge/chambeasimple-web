@@ -29,8 +29,8 @@ export const TEAM = [
 ] as const;
 
 export const PATHS = {
-  es: { home: '/', case: (slug: string) => `/casos/${slug}` },
-  en: { home: '/en', case: (slug: string) => `/en/case-studies/${slug}` },
+  es: { home: '/', privacy: '/privacidad', case: (slug: string) => `/casos/${slug}` },
+  en: { home: '/en', privacy: '/en/privacy', case: (slug: string) => `/en/case-studies/${slug}` },
 } as const;
 
 export type Lang = keyof typeof PATHS;

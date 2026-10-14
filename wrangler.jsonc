@@ -15,7 +15,7 @@
     // Only page routes run the Worker (Markdown, headers, measurement): on the free plan every run
     // counts against 100k requests a day; files never do. worker/index.test.ts checks the list.
     // ponytail: past ~100k page views a day, Workers Paid (5 USD/month) or fewer Worker routes.
-    "run_worker_first": ["/", "/en", "/en/*", "/casos/*"]
+    "run_worker_first": ["/", "/en", "/en/*", "/casos/*", "/privacidad"]
   },
   // Cookieless page views (worker/index.ts, pointOf). Free tier: 100k data points a day.
   // Off until Analytics Engine is enabled once in the dashboard (Workers > Analytics Engine);

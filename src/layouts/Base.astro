@@ -100,6 +100,7 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
         </p>
         <p class="flex flex-wrap gap-x-4">
           <a href={`mailto:${SITE.email}`} class="underline">{SITE.email}</a>
+          <a href={PATHS[lang].privacy} class="underline">{t.privacy.link}</a>
           <a href={markdown} class="underline">{t.footer.markdown}</a>
         </p>
       </div>

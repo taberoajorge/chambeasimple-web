@@ -11,6 +11,21 @@
         "--performance-crux=false"
       ],
       "enabled": true
+    },
+    "cloudflare-docs": {
+      "type": "remote",
+      "url": "https://docs.mcp.cloudflare.com/mcp",
+      "enabled": true
+    },
+    "cloudflare-observability": {
+      "type": "remote",
+      "url": "https://observability.mcp.cloudflare.com/mcp",
+      "enabled": true
+    },
+    "cloudflare-graphql": {
+      "type": "remote",
+      "url": "https://graphql.mcp.cloudflare.com/mcp",
+      "enabled": true
     }
   }
 }

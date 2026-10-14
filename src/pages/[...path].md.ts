@@ -78,10 +78,20 @@ const study = (lang: Lang, item: Case) => {
   ].join('\n\n');
 };
 
+const privacy = (lang: Lang) => {
+  const t = T[lang];
+  return [
+    `# ${t.privacy.title}`,
+    `> ${t.privacy.updated} ${t.privacy.draft}`,
+    ...t.privacy.sections.map((s) => `## ${s.title}\n\n${s.body}`),
+  ].join('\n\n');
+};
+
 export const getStaticPaths = () => {
   const cases = published(import.meta.env.DEV);
   return (['es', 'en'] as const).flatMap((lang) => [
     { params: { path: lang === 'es' ? 'index' : 'en' }, props: { body: home(lang, cases) } },
+    { params: { path: PATHS[lang].privacy.slice(1) }, props: { body: privacy(lang) } },
     ...cases.map((c) => ({
       params: { path: PATHS[lang].case(c[lang].slug).slice(1) },
       props: { body: study(lang, c) },
