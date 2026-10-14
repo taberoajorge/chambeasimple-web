@@ -20,7 +20,7 @@ export type Env = {
   GOOGLE_CLIENT_SECRET?: string;
   GOOGLE_REFRESH_TOKEN?: string;
   AGENDA_CALENDAR?: string;
-  PEOPLE?: string; // the owners' calendar emails, comma-separated
+  PEOPLE?: string; // calendars checked for busy time and invited, comma-separated (hola@)
   FORM_SECRET?: string;
   TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET?: string;

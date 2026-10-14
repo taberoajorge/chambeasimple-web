@@ -17,10 +17,13 @@
   "vars": {
     // Turnstile widget "chambeasimple-agenda" (Managed mode). The site key is public; the secret is
     // TURNSTILE_SECRET.
-    "TURNSTILE_SITE_KEY": "0x4AAAAAAFW5Q1ffISVM0M9j"
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAFW5Q1ffISVM0M9j",
+    // Availability comes only from the hola@ account's own calendar: the owners block their time
+    // there. It is also invited, so SimpleLogin forwards every booking to both of them.
+    "PEOPLE": "hola@chambasimple.com"
   },
   // Secrets (wrangler secret put, never in the repo): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
   // GOOGLE_REFRESH_TOKEN (of hola@chambasimple.com), AGENDA_CALENDAR (the app's own calendar id),
-  // PEOPLE (the owners' calendar emails, comma-separated), FORM_SECRET, TURNSTILE_SECRET.
+  // FORM_SECRET, TURNSTILE_SECRET.
   "observability": { "enabled": true }
 }

@@ -1,5 +1,5 @@
 // Google Calendar, with the least access that works (design.md, agenda-propia):
-// calendar.freebusy reads only busy blocks of Alex's and Sandra's calendars (no titles, no guests);
+// calendar.freebusy reads only busy blocks of the hola@ calendar (no titles, no guests);
 // calendar.app.created writes only to the agenda's own secondary calendar.
 import type { Interval } from './slots.ts';
 
@@ -8,7 +8,7 @@ export type Google = {
   clientSecret: string;
   refreshToken: string;
   agendaCalendar: string; // id of the secondary calendar the app created
-  people: string[]; // the owners' calendars (their emails), checked for busy blocks and invited
+  people: string[]; // calendars checked for busy blocks and invited (hola@chambasimple.com)
 };
 
 type Fetch = typeof fetch;
