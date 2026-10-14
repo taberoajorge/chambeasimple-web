@@ -5,7 +5,7 @@ import { type Case, clientOf, published } from '../content/cases.ts';
 import { clients } from '../content/clients.ts';
 import { en } from '../content/en.ts';
 import { type Content, es } from '../content/es.ts';
-import { faqItems, type Lang, PATHS, SITE, TEAM } from '../content/site.ts';
+import { book, faqItems, type Lang, PATHS, SITE, TEAM } from '../content/site.ts';
 
 const T: Record<Lang, Content> = { es, en };
 const url = (path: string) => new URL(path, SITE.url).href;
@@ -17,7 +17,7 @@ const home = (lang: Lang, cases: Case[]) => {
     `# ${SITE.name}: ${t.hero.title}`,
     `> ${t.hero.lema} ${t.meta.description}`,
     t.hero.lead,
-    `${t.cta.primary}: <mailto:${SITE.email}>`,
+    `${t.cta.primary}: <${book(lang, 'markdown')}>`,
     `## ${t.clients.title}`,
     list(
       clients(import.meta.env.DEV).map(
@@ -47,7 +47,7 @@ const home = (lang: Lang, cases: Case[]) => {
     list(t.ai.works.items),
     `### ${t.ai.limits.title}`,
     list(t.ai.limits.items),
-    `${t.ai.cta}: <mailto:${SITE.email}>`,
+    `${t.ai.cta}: <${book(lang, 'markdown')}>`,
     `## ${t.why.title}`,
     list(t.why.items.map((w) => `**${w.title}:** ${w.body}`)),
     `## ${t.team.title}`,
@@ -58,7 +58,7 @@ const home = (lang: Lang, cases: Case[]) => {
       .map((f) => `### ${f.q}\n\n${f.a}`)
       .join('\n\n'),
     `## ${t.contact.title}`,
-    `${t.contact.body} ${t.contact.email} <mailto:${SITE.email}>.`,
+    `${t.contact.body} <${book(lang, 'markdown')}> · ${t.contact.email} <mailto:${SITE.email}>.`,
   ].join('\n\n');
 };
 
@@ -74,7 +74,16 @@ const study = (lang: Lang, item: Case) => {
     `## ${t.cases.page.built}\n\n${list(c.built)}`,
     `## ${t.cases.page.limits}\n\n${list(c.limits)}`,
     `## ${t.cases.page.outcome}\n\n${c.outcome}`,
-    `${t.cases.page.nextStep} ${t.contact.email} <mailto:${SITE.email}>.`,
+    `${t.cases.page.nextStep} ${t.cta.primary}: <${book(lang, 'markdown')}>.`,
+  ].join('\n\n');
+};
+
+const privacy = (lang: Lang) => {
+  const t = T[lang];
+  return [
+    `# ${t.privacy.title}`,
+    `> ${t.privacy.updated} ${t.privacy.draft}`,
+    ...t.privacy.sections.map((s) => `## ${s.title}\n\n${s.body}`),
   ].join('\n\n');
 };
 
@@ -82,6 +91,7 @@ export const getStaticPaths = () => {
   const cases = published(import.meta.env.DEV);
   return (['es', 'en'] as const).flatMap((lang) => [
     { params: { path: lang === 'es' ? 'index' : 'en' }, props: { body: home(lang, cases) } },
+    { params: { path: PATHS[lang].privacy.slice(1) }, props: { body: privacy(lang) } },
     ...cases.map((c) => ({
       params: { path: PATHS[lang].case(c[lang].slug).slice(1) },
       props: { body: study(lang, c) },

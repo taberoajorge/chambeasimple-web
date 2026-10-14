@@ -14,7 +14,7 @@
     "check": "pnpm check:biome && pnpm typecheck && pnpm test && pnpm check:boundaries && pnpm knip && pnpm check:spec && node scripts/agent-hooks.ts certify",
     "check:biome": "biome check .",
     "typecheck": "astro check",
-    "test": "node --test 'src/**/*.test.ts' 'scripts/**/*.test.ts' 'worker/**/*.test.ts'",
+    "test": "node --test 'src/**/*.test.ts' 'scripts/**/*.test.ts' 'worker/**/*.test.ts' 'agenda/**/*.test.ts'",
     "check:boundaries": "node scripts/checks/boundaries.ts",
     "knip": "knip",
     "check:spec": "pnpm dlx @fission-ai/openspec@1.13.2 validate --all --strict",
@@ -25,7 +25,9 @@
     "delivery:pr-create": "node scripts/delivery.ts pr-create",
     "delivery:merge": "node scripts/delivery.ts merge",
     "deploy": "pnpm build && wrangler deploy",
-    "preview:worker": "pnpm build && wrangler dev --port 8787"
+    "preview:worker": "pnpm build && wrangler dev --port 8787",
+    "deploy:agenda": "wrangler deploy --config agenda/wrangler.jsonc",
+    "dev:agenda": "wrangler dev --config agenda/wrangler.jsonc --port 8788"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",

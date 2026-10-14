@@ -1,0 +1,31 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "chambeasimple-agenda",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-14",
+  "routes": [{ "pattern": "agenda.chambasimple.com", "custom_domain": true }],
+  "workers_dev": true,
+  "preview_urls": true,
+  // Locks, the 5-minute busy cache, per-email counters (hashed) and the token health flag.
+  "kv_namespaces": [{ "binding": "KV", "id": "e8c201d33a1a49e0a7f5733a67dd1ec0" }],
+  // 5 booking attempts per minute per IP (periods can only be 10 or 60 seconds).
+  "ratelimits": [
+    { "name": "LIMIT", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }
+  ],
+  // Daily check that the Google token still works (src/index.ts, scheduled).
+  "triggers": { "crons": ["0 11 * * *"] },
+  "vars": {
+    // Turnstile widget "chambeasimple-agenda" (Managed mode). The site key is public; the secret is
+    // TURNSTILE_SECRET.
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAFW5Q1ffISVM0M9j",
+    // Availability comes only from the hola@ account's own calendar: the owners block their time
+    // there. Emails go out through Resend, signed as chambasimple.com (agenda/src/mail.ts); the
+    // owners' notice goes to NOTIFY, a SimpleLogin alias that forwards to both mailboxes.
+    "PEOPLE": "hola@chambasimple.com",
+    "NOTIFY": "agenda@chambasimple.com"
+  },
+  // Secrets (wrangler secret put, never in the repo): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+  // GOOGLE_REFRESH_TOKEN (of hola@chambasimple.com), AGENDA_CALENDAR (the app's own calendar id),
+  // FORM_SECRET, TURNSTILE_SECRET, RESEND_API_KEY (send-only, restricted to chambasimple.com).
+  "observability": { "enabled": true }
+}

@@ -6,11 +6,11 @@ Que una empresa pase de "me interesa" a una conversación agendada en menos de u
 
 ## ADDED Requirements
 
-### Requirement: Solo horarios en que los dos están libres
-La agenda SHALL ofrecer bloques de 30 minutos dentro del horario laboral configurado (por defecto, de lunes a viernes de 9:00 a 18:00 en Lima), con al menos 24 horas de anticipación y como máximo 21 días hacia adelante. Un bloque MUST aparecer solo si los calendarios de Sandra y de Alex están libres, según `freeBusy`. Los horarios MUST mostrarse en la zona horaria del visitante, indicando cuál es.
+### Requirement: Solo horarios libres en el calendario de Chambea Simple
+La agenda SHALL ofrecer bloques de 30 minutos dentro del horario laboral configurado (por defecto, de lunes a viernes de 9:00 a 18:00 en Lima), con al menos 24 horas de anticipación y como máximo 21 días hacia adelante. Un bloque MUST aparecer solo si el calendario principal de `hola@chambasimple.com` (donde los dueños bloquean su tiempo) y el calendario propio de la agenda están libres, según `freeBusy`. Los horarios MUST mostrarse en la zona horaria del visitante, indicando cuál es.
 
 #### Scenario: Uno de los dos está ocupado
-- **WHEN** Sandra tiene un evento de 10:00 a 11:00 y Alex está libre
+- **WHEN** el calendario de `hola@` tiene un evento de 10:00 a 11:00
 - **THEN** los bloques de 10:00 y 10:30 no se ofrecen
 
 #### Scenario: Visitante en Ciudad de México
@@ -18,7 +18,7 @@ La agenda SHALL ofrecer bloques de 30 minutos dentro del horario laboral configu
 - **THEN** ve los horarios en hora de Ciudad de México, con la zona indicada
 
 ### Requirement: Reserva con invitación y Meet
-Al reservar, la agenda SHALL volver a consultar la disponibilidad del bloque y, si sigue libre, crear el evento en el calendario de Alex con un enlace de Google Meet, con Sandra y el visitante como invitados (`sendUpdates=all`). Si el bloque ya no está libre, MUST avisar al visitante y ofrecer los siguientes. El visitante MUST recibir la invitación de Google en su correo.
+Al reservar, la agenda SHALL volver a consultar la disponibilidad del bloque y, si sigue libre, crear el evento en el calendario de la agenda con un enlace de Google Meet, con `hola@chambasimple.com` y el visitante como invitados (`sendUpdates=all`); SimpleLogin reenvía la invitación a los dos dueños. Si el bloque ya no está libre, MUST avisar al visitante y ofrecer los siguientes. El visitante MUST recibir la invitación de Google en su correo.
 
 #### Scenario: Dos personas eligen el mismo bloque
 - **WHEN** dos visitantes envían el mismo bloque casi a la vez
@@ -42,12 +42,12 @@ La página de la agenda SHALL usar la paleta, la tipografía y los temas claro y
 Una tarea diaria SHALL comprobar que el token de Google sigue siendo válido. Si falla, MUST enviar un aviso a `hola@chambasimple.com`, y la agenda MUST mostrar el correo como alternativa en lugar de los horarios.
 
 #### Scenario: Token revocado
-- **WHEN** Alex revoca el acceso de la aplicación en su cuenta de Google
+- **WHEN** se revoca el acceso de la aplicación en la cuenta `hola@chambasimple.com`
 - **THEN** al día siguiente llega el aviso, y la agenda ofrece el correo en vez de los horarios
 
 ### Requirement: Los datos de los clientes nunca quedan expuestos
 La agenda SHALL exponer solo dos operaciones: consultar horarios libres (bloques sin ningún dato de otras reservas) y crear una reserva. Ninguna ruta MUST listar, leer ni exportar reservas, nombres o correos. Además:
-- **Permisos de Google mínimos:** `calendar.app.created`, para un calendario secundario "Chambea Simple · Agenda" que la app crea y es lo único que puede leer o editar, y `calendar.freebusy`, que devuelve solo bloques ocupados, sin títulos ni invitados.
+- **Permisos de Google mínimos, sobre la cuenta `hola@chambasimple.com`:** `calendar.app.created`, para un calendario secundario "Chambea Simple · Agenda" que la app crea y es lo único que puede leer o editar, y `calendar.freebusy`, que devuelve solo bloques ocupados, sin títulos ni invitados.
 - **El token de Google** vive como secreto del Worker (cifrado, no legible por la API ni por el repo), nunca en KV, en el código ni en los logs.
 - **Los logs y la analítica** no registran nombre, correo ni texto del visitante.
 
@@ -57,12 +57,12 @@ La agenda SHALL exponer solo dos operaciones: consultar horarios libres (bloques
 
 #### Scenario: El token se filtra
 - **WHEN** alguien obtiene el token de la agenda
-- **THEN** solo ve el calendario secundario de la agenda, no el calendario personal de Alex, ni sus correos, ni el calendario de Sandra
+- **THEN** solo ve el calendario secundario de la agenda y bloques ocupados de `hola@`: ni los calendarios personales de los dueños, ni correos
 
 ### Requirement: Protección contra spam y abuso
 La creación de reservas SHALL exigir:
 - Cloudflare Turnstile, gratuito e invisible para la mayoría;
-- un límite por IP con el binding de Rate Limiting de Workers (por defecto, 5 intentos cada 10 minutos);
+- un límite por IP con el binding de Rate Limiting de Workers (5 intentos por minuto: el binding solo admite periodos de 10 o 60 segundos);
 - un campo trampa;
 - validación en el servidor;
 - como máximo 2 reservas por correo cada 7 días;
@@ -73,7 +73,7 @@ Los horarios libres MUST servirse desde caché por 5 minutos, para que una ráfa
 
 #### Scenario: Ráfaga de reservas falsas
 - **WHEN** un script envía 100 reservas en un minuto desde una IP
-- **THEN** a partir del sexto intento recibe 429, no se crea ningún evento extra, y Google no recibe más de 5 consultas
+- **THEN** a partir del sexto intento recibe 429, y ninguna reserva sin trampas superadas llega a Google
 
 ### Requirement: Costo cero
 

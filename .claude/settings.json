@@ -1,5 +1,10 @@
 {
-  "enabledMcpjsonServers": ["chrome-devtools"],
+  "enabledMcpjsonServers": [
+    "chrome-devtools",
+    "cloudflare-docs",
+    "cloudflare-observability",
+    "cloudflare-graphql"
+  ],
   "hooks": {
     "SessionStart": [
       {

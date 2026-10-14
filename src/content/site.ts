@@ -9,6 +9,7 @@ export const SITE = {
   url: 'https://chambasimple.com',
   name: 'Chambea Simple',
   email: 'hola@chambasimple.com',
+  agenda: 'https://agenda.chambasimple.com',
   whatsapp: '', // international format without "+", e.g. "51999999999"
   // Where we can issue a local invoice (we have tax residence only in Peru and Mexico). An entry
   // shows up, in the footer, the FAQ and the JSON-LD, once its tax id is filled in.
@@ -29,8 +30,8 @@ export const TEAM = [
 ] as const;
 
 export const PATHS = {
-  es: { home: '/', case: (slug: string) => `/casos/${slug}` },
-  en: { home: '/en', case: (slug: string) => `/en/case-studies/${slug}` },
+  es: { home: '/', privacy: '/privacidad', case: (slug: string) => `/casos/${slug}` },
+  en: { home: '/en', privacy: '/en/privacy', case: (slug: string) => `/en/case-studies/${slug}` },
 } as const;
 
 export type Lang = keyof typeof PATHS;
@@ -39,8 +40,10 @@ export type Lang = keyof typeof PATHS;
 export const pageTitle = (title: string) =>
   title.length + SITE.name.length + 3 <= 60 ? `${title} · ${SITE.name}` : title;
 
-export const mailto = (subject: string, body: string) =>
-  `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+// Every "book a call" button goes to the agenda, in the page's language. `from` names the button
+// (hero, header, contact…) so the owners' notice says where the booking came from.
+export const book = (lang: Lang, from: string) =>
+  `${SITE.agenda}${lang === 'en' ? '/en' : ''}?from=${encodeURIComponent(from)}`;
 
 export const invoicing = () => SITE.billing.filter((b) => b.taxId);
 

@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { PATHS } from '../src/content/site.ts';
+import { THEME_SCRIPT } from '../src/layouts/theme.ts';
 import worker, { pointOf, twinOf, visitorOf } from './index.ts';
 
 // A fake assets binding: serves a few files by path.
@@ -120,7 +122,14 @@ test('every kind of page is a run_worker_first route', () => {
   const routes: string[] = config.assets.run_worker_first;
   const covered = (path: string) =>
     routes.some((r) => (r.endsWith('/*') ? path.startsWith(r.slice(0, -1)) : path === r));
-  for (const path of [PATHS.es.home, PATHS.en.home, PATHS.es.case('x'), PATHS.en.case('x')])
+  for (const path of [
+    PATHS.es.home,
+    PATHS.en.home,
+    PATHS.es.privacy,
+    PATHS.en.privacy,
+    PATHS.es.case('x'),
+    PATHS.en.case('x'),
+  ])
     assert.ok(covered(path), `${path} is not in run_worker_first`);
   assert.ok(
     !covered('/favicon.svg') && !covered('/llms.txt'),
@@ -128,8 +137,23 @@ test('every kind of page is a run_worker_first route', () => {
   );
 });
 
-test('no script may run, and the real domain is HTTPS-only', async () => {
+test('only the theme script may run, and the real domain is HTTPS-only', async () => {
   const res = await get('https://chambasimple.com/');
-  assert.match(res.headers.get('content-security-policy') ?? '', /script-src 'none'/);
+  const hash = createHash('sha256').update(THEME_SCRIPT).digest('base64');
+  assert.ok(
+    (res.headers.get('content-security-policy') ?? '').includes(`script-src 'sha256-${hash}'`),
+    `the CSP must allow exactly the theme script: sha256-${hash}`,
+  );
   assert.match(res.headers.get('strict-transport-security') ?? '', /max-age=31536000/);
+});
+
+test('www redirects for good to the apex, keeping path and query', async () => {
+  const res = await get('https://www.chambasimple.com/en?utm_source=x');
+  assert.equal(res.status, 308);
+  assert.equal(res.headers.get('location'), 'https://chambasimple.com/en?utm_source=x');
+});
+
+test('pages tell Cloudflare not to transform them (no injected scripts)', async () => {
+  const res = await get('https://chambasimple.com/');
+  assert.match(res.headers.get('cache-control') ?? '', /no-transform/);
 });

@@ -55,27 +55,27 @@ const CASES: Case[] = [
         'En producción desde septiembre de 2026, con los clientes reales de O&L. Siguen abiertos ajustes a las alertas y a algunas vistas.',
     },
     en: {
-      slug: 'ol-asesores-immigration-deadlines',
-      title: 'Immigration deadline tracking for O&L Asesores',
+      slug: 'ol-asesores-immigration-case-management',
+      title: 'Immigration case management software for O&L Asesores',
       summary:
-        'A back office where O&L moves each client case through its stages and emails the client before a permit expires.',
+        'Custom immigration case management software: O&L moves each client case through its stages, and an email goes out before a permit expires.',
       problem:
-        'For an immigration law firm, the problem is not paperwork but memory: if a residence permit expires unnoticed, the client loses their legal status. Client and case information was spread across spreadsheets and chats.',
+        "For an immigration consultancy, the hard part isn't the paperwork, it's remembering. If a residence permit expires and nobody notices, the client loses their legal status. Client and case information was spread across spreadsheets and chats.",
       built: [
         'Services: every case the firm handles, with counters that double as filters, CSV export and a detail panel.',
-        'A board per service type: each case moves through its stages by drag and drop, and closing or cancelling asks for confirmation.',
-        'Clients: companies and individuals, the people at each company and their upcoming expiries.',
-        'Service types the firm sets up on its own: which dates raise alerts, how many days ahead and which stages they have. A new kind of procedure is configuration, not code.',
-        "Email alerts every Monday: one email per client with everything coming due, and a digest for the firm's team. Every send is logged.",
-        'Admin and editor roles, all in Spanish, with light and dark themes.',
+        'A board for each service type: cases move through their stages by drag and drop, and closing or cancelling a case asks for confirmation.',
+        'Clients: companies and individuals, the people at each company, and their upcoming expiry dates.',
+        'Service types the firm configures on its own: which dates trigger alerts, how many days ahead, and which stages each type has. A new kind of procedure is a setting, not code.',
+        "Email alerts every Monday: one email per client with everything coming due, plus a summary for the firm's team. Every email sent is logged.",
+        'Admin and editor roles, an interface in Spanish, and light and dark themes.',
       ],
       limits: [
-        'Every change is written as a spec first and reviewed with the firm in rounds.',
-        'Before release, 35 end-to-end tests walk through the app against its own database.',
-        'Preview deployments use a separate database: real data never leaves production.',
+        'Every change starts as a written spec and is reviewed with the firm in rounds.',
+        'Before each release, 35 end-to-end tests run through the app against its own database.',
+        'Preview deployments use a separate database, so real data never leaves production.',
       ],
       outcome:
-        "In production since September 2026, with O&L's real clients. Adjustments to alerts and some views are still open.",
+        "In production since September 2026, with O&L's real clients. Some changes to the alerts and a few views are still open.",
     },
   },
   {
@@ -107,26 +107,26 @@ const CASES: Case[] = [
         'Proyecto en curso: empezamos por la definición de los perfiles y la prueba con prospectos reales.',
     },
     en: {
-      slug: 'ol-asesores-b2b-prospect-finder',
-      title: 'An AI B2B prospect finder for O&L Asesores',
+      slug: 'ol-asesores-ai-lead-generation',
+      title: 'AI lead generation tool for O&L Asesores',
       summary:
-        "An app where O&L's team says what it needs and AI returns a list of companies likely to need corporate immigration services, each with its evidence and source.",
+        "O&L's team describes what it's looking for, and AI returns companies likely to need corporate immigration services, each with its evidence and source.",
       problem:
         'O&L supports companies with foreign staff in Peru: contracts, immigration status, foreign resident cards, renewals and the legal cap on foreign workers. Finding companies worth contacting was manual work.',
       built: [
-        "We configure the app with O&L's knowledge: its services, client types, criteria and exclusions.",
-        'The team picks a search profile and adds documents and requirements (region, sector, size or another condition).',
+        "We set up the app with O&L's know-how: its services, client types, criteria and exclusions.",
+        'The team picks a search profile and adds documents and requirements (region, industry, company size or another condition).',
         'Two starting profiles: foreign companies starting operations in Peru, and mid-sized companies with foreign staff on payroll.',
-        'AI researches public sources and returns a list of companies, each with its website, the signal found, its source and date, why it fits and what could not be confirmed.',
-        'The team reviews each company, marks the ones it wants and exports the list. Results are saved.',
+        'AI researches public sources and returns a list of companies, each with its website, the signal it found, the source and date, why it fits, and what it could not confirm.',
+        'The team reviews each company, marks the ones worth pursuing and exports the list. Results are saved.',
       ],
       limits: [
-        'Before building, we test the search with real prospects.',
-        'Results describe public signals to decide whom to contact; they do not prove a company needs the service.',
-        'Drafting messages and following up with contacts is a second stage.',
+        'Before the full build, we pilot the search on real prospects.',
+        'Results describe public signals to help decide whom to contact; they do not prove that a company needs the service.',
+        'Drafting outreach messages and following up with contacts come in a second phase.',
       ],
       outcome:
-        'In progress: we start by defining the profiles and testing the search with real prospects.',
+        'In progress: we are starting with the search profiles and the pilot on real prospects.',
     },
   },
   {
@@ -154,23 +154,23 @@ const CASES: Case[] = [
         'La misma base, búsqueda con criterios más conversaciones con seguimiento, sirve para encontrar y atender prospectos comerciales.',
     },
     en: {
-      slug: 'real-estate-search-and-follow-up',
-      title: 'AI search and follow-up for apartments',
+      slug: 'ai-apartment-search-whatsapp-follow-up',
+      title: 'AI apartment search and WhatsApp follow-up',
       summary:
-        'Finds apartments and projects that meet specific requirements and carries the WhatsApp conversations, follow-up and negotiation with real-estate agencies.',
+        'Finds apartments that meet specific requirements and manages the WhatsApp conversations, follow-up and negotiation with real estate agencies.',
       problem:
-        "Looking for an apartment means sifting through dozens of listings that don't match and keeping several conversations with agencies going at once.",
+        "Looking for an apartment means going through dozens of listings that don't match what you need, while keeping conversations going with several agencies at once.",
       built: [
-        "Search for apartments and projects against specific requirements (for example area, price or size); AI discards what doesn't fit.",
-        'The WhatsApp conversations with each agency live in one place, with their history.',
-        'AI suggests replies and next steps for follow-up and negotiation; a person decides what is sent.',
+        "Search for apartments and new developments against specific requirements (for example neighborhood, price or size); AI filters out what doesn't fit.",
+        'Every WhatsApp conversation with each agency lives in one place, with its full history.',
+        'AI suggests replies and next steps for follow-up and negotiation; a person decides what gets sent.',
       ],
       limits: [
-        'It is our own product, with no measured figures.',
-        'For clients we use the official WhatsApp Business API.',
+        "It's our own product, with no measured results.",
+        'For client projects we use the official WhatsApp Business API.',
       ],
       outcome:
-        'The same base, search with criteria plus conversations with follow-up, works for finding and answering sales prospects.',
+        'The same foundation, criteria-based search plus conversations with follow-up, works for finding and following up with sales prospects.',
     },
   },
   {
@@ -195,19 +195,19 @@ const CASES: Case[] = [
       outcome: 'En producción en job.taberoa.com.',
     },
     en: {
-      slug: 'crm-with-ai-agents',
-      title: 'A CRM with AI agents for a job search',
+      slug: 'custom-crm-with-ai-agents',
+      title: 'Custom CRM with AI agents for a job search',
       summary:
-        'A mobile CRM in production where AI agents research companies and record jobs and contacts, always with approval before writing.',
+        'A mobile CRM in production where AI agents research companies and log jobs and contacts, always with approval before they write anything.',
       problem:
-        'A serious job search means dozens of companies, openings and contacts spread across sheets and chats; without order, follow-ups get lost.',
+        'A serious job search means dozens of companies, openings and contacts spread across spreadsheets and chats; without a system, follow-ups get lost.',
       built: [
-        'A mobile web app on Supabase, with sign-in (Clerk) and permissions that only let the owner in.',
-        'MCP tools so AI agents can read and record data without duplicating or overwriting changes.',
-        'A company research loop that proposes opportunities with their source.',
-        'Verified migration from the previous version: 93 jobs and 92 contacts restored.',
+        'A mobile web app on Supabase, with sign-in through Clerk and permissions that only let the owner in.',
+        'MCP tools that let AI agents read and record data without creating duplicates or overwriting changes.',
+        'A company research loop that suggests opportunities, each with its source.',
+        'A verified migration from the previous version: 93 jobs and 92 contacts restored.',
       ],
-      limits: ['No message goes out on its own: external sends need the owner’s approval.'],
+      limits: ["Nothing goes out on its own: every external message needs the owner's approval."],
       outcome: 'In production at job.taberoa.com.',
     },
   },

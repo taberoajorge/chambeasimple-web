@@ -1,0 +1,10 @@
+---
+import { es as t } from '../content/es.ts';
+import { PATHS, pageTitle } from '../content/site.ts';
+import Base from '../layouts/Base.astro';
+import Privacy from '../sections/Privacy.astro';
+---
+
+<Base t={t} lang="es" title={pageTitle(t.privacy.title)} description={t.privacy.description} paths={{ es: PATHS.es.privacy, en: PATHS.en.privacy }} schema={{ '@context': 'https://schema.org', '@type': 'WebPage', name: t.privacy.title }}>
+  <Privacy t={t} />
+</Base>

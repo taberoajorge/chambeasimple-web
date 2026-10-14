@@ -6,24 +6,23 @@ export const es = {
   meta: {
     title: 'Chambea Simple · Software a la medida para empresas',
     description:
-      'Software a la medida para empresas en Perú y México: investigación con IA, seguimiento de clientes, sistemas internos e integraciones. Probamos con tus datos.',
+      'Software a la medida para empresas en Perú y México: investigación con IA, seguimiento de clientes, sistemas internos e integraciones. Lo ves funcionar antes.',
   },
   nav: {
     skip: 'Saltar al contenido',
+    theme: 'Tema oscuro',
     label: 'Principal',
     switchTo: { label: 'English', lang: 'en' },
   },
   cta: {
     primary: 'Agenda una conversación',
-    mailSubject: 'Quiero conversar sobre un proyecto',
-    mailBody: 'Hola, somos [empresa]. Nos gustaría resolver: ',
   },
   hero: {
     title: 'Software a la medida para empresas',
     lema: 'Hacemos software para la buena chamba.',
-    lead: 'Para equipos que hoy hacen a mano lo que un sistema podría hacer por ellos: buscar clientes, darles seguimiento, ordenar la operación o conectar sus herramientas. Primero entendemos cómo trabajas; luego construimos por etapas, probando con datos reales.',
+    lead: 'Para equipos que hoy hacen a mano lo que un sistema podría hacer por ellos: buscar clientes, darles seguimiento, ordenar la operación o conectar sus herramientas. Primero entendemos cómo trabajas; luego construimos por etapas, y en cada una ves el avance funcionando.',
     secondary: 'Ver casos',
-    note: 'La primera conversación es gratis. Antes de construir, probamos con tus datos.',
+    note: 'La primera conversación es gratis. Antes de invertir en todo el sistema, lo ves funcionar en pequeño.',
   },
   clients: {
     title: 'Empresas que trabajan con nosotros',
@@ -75,9 +74,9 @@ export const es = {
         gets: 'Una propuesta con etapas, entregables y precio por etapa.',
       },
       {
-        title: 'Prueba con datos reales',
-        body: 'Antes de construir, probamos la idea con tus datos.',
-        gets: 'Un punto de decisión: seguir, ajustar o parar.',
+        title: 'Una versión pequeña primero',
+        body: 'Antes de construir todo, armamos una versión pequeña que funciona con casos reales de tu empresa.',
+        gets: 'La ves funcionar y decides: seguir, ajustar o parar.',
       },
       {
         title: 'Construcción por etapas',
@@ -125,7 +124,7 @@ export const es = {
     id: 'ideas-con-ia',
     title: '¿Tienes una idea con IA? La hacemos realidad',
     intro:
-      'La mayoría de los proyectos de IA no fallan por el modelo, sino por cómo encajan en el trabajo diario. Por eso empezamos con una prueba sobre tus datos, y con ese resultado decides.',
+      'La mayoría de los proyectos de IA no fallan por el modelo, sino por cómo encajan en el trabajo diario. Por eso empezamos con una versión pequeña que funciona con casos reales de tu empresa: la ves funcionar y con eso decides.',
     fact: 'El 95 % de los pilotos de IA generativa no logra un impacto financiero medible.',
     source: {
       label: 'MIT NANDA (2025), citado por Stanford Digital Economy Lab (2026)',
@@ -146,20 +145,18 @@ export const es = {
       items: [
         'Decisiones sin revisión: la IA propone y una persona aprueba.',
         'Resultados sin datos: si la información no existe o está desordenada, primero la ordenamos.',
-        'Cero errores: en la prueba medimos cuánto se equivoca y te lo decimos.',
+        'Cero errores: en la versión pequeña medimos cuánto se equivoca y te lo decimos.',
         'Reemplazar el criterio de un abogado, un contador o un médico.',
       ],
     },
     cta: 'Cuéntanos tu idea',
-    mailSubject: 'Tengo una idea con IA',
-    mailBody: 'Hola, mi idea es: ',
   },
   why: {
     title: 'Por qué trabajar con nosotros',
     items: [
       {
-        title: 'Probamos antes de construir',
-        body: 'Antes de la construcción probamos la idea con tus datos reales. Si no da lo que esperamos, te lo decimos y decidimos juntos si ajustar o parar.',
+        title: 'Lo ves funcionar antes de invertir',
+        body: 'Antes de construir todo el sistema, armamos una versión pequeña con casos reales de tu empresa. Si no da lo que esperamos, te lo decimos y decidimos juntos si ajustar o parar, antes de que inviertas en lo demás.',
       },
       {
         title: 'El código es tuyo',
@@ -211,16 +208,16 @@ export const es = {
         a: 'Los servicios que el sistema usa para funcionar, como servidores, IA o fuentes de datos. Van a nombre de tu empresa y te estimamos su costo antes de empezar.',
       },
       {
-        q: '¿Qué pasa si la prueba no funciona?',
-        a: 'Por eso probamos antes de construir. Si la prueba con tus datos no da lo esperado, decidimos juntos si ajustar el enfoque o detenernos ahí.',
+        q: '¿Qué pasa si la versión pequeña no funciona?',
+        a: 'Para eso la hacemos primero. Si con tus casos reales no da lo esperado, decidimos juntos si ajustar el enfoque o detenernos ahí, sin que hayas pagado todo el sistema.',
       },
       {
         q: '¿Qué necesitan de nosotros?',
         a: 'Tiempo para las sesiones, ejemplos reales de tu trabajo y una persona de tu equipo que valide cada entrega.',
       },
       {
-        q: '¿Trabajan en remoto?',
-        a: 'Sí. Trabajamos en remoto, en español y en inglés.',
+        q: '¿Trabajan en remoto o presencial?',
+        a: 'Todo el proyecto puede hacerse en remoto, en español o en inglés. Si el proyecto es mediano o grande, también podemos hacer sesiones presenciales en el Perú o en México, por ejemplo el entendimiento inicial o la capacitación del equipo.',
       },
     ],
     invoice: {
@@ -234,13 +231,39 @@ export const es = {
   },
   contact: {
     title: '¿Qué quieres resolver?',
-    body: 'Cuéntanos en un correo qué hace tu equipo a mano hoy. Te respondemos para agendar una conversación de 30 minutos, gratis.',
-    email: 'Escríbenos a',
+    body: 'Elige un horario y conversamos 30 minutos por Google Meet, gratis. Cuéntanos qué hace tu equipo a mano hoy y vemos si podemos ayudarte.',
+    email: '¿Prefieres correo? Escríbenos a',
   },
   notFound: {
     title: 'Esta página no existe',
     body: 'Puede que el enlace haya cambiado. Vuelve al inicio o escríbenos y te ayudamos.',
     home: 'Ir al inicio',
+  },
+  privacy: {
+    title: 'Privacidad',
+    description:
+      'Qué datos trata Chambea Simple: sin cookies ni rastreo, visitas medidas sin identificar a nadie, y tus derechos sobre los datos que nos das.',
+    updated: 'Actualizado el 14 de octubre de 2026.',
+    sections: [
+      {
+        title: 'Sin cookies ni rastreo',
+        body: 'Este sitio no usa cookies, no carga píxeles de anuncios ni scripts de analítica, y no te sigue a otros sitios.',
+      },
+      {
+        title: 'Qué medimos',
+        body: 'Por cada página vista, nuestro servidor anota la página, el sitio desde el que llegaste, la campaña (si el enlace la trae), el país y si la visita parece de una persona, de un bot o de un agente de IA. No guardamos tu IP ni nada que te identifique.',
+      },
+      {
+        title: 'Si nos escribes o agendas',
+        body: 'Usamos tu nombre, tu empresa, tu correo y lo que nos cuentes solo para responderte y preparar la conversación. Una reserva vive en nuestro calendario de Google; no la compartimos ni la vendemos. Solo con tu permiso, marcado aparte, avisamos a una plataforma de anuncios que una visita terminó en reserva.',
+      },
+      {
+        title: 'Tus derechos',
+        body: 'Puedes pedirnos ver, corregir o borrar tus datos, u oponerte a su uso (derechos ARCO, Ley 29733 en el Perú y LFPDPPP en México), escribiendo a hola@chambasimple.com. Respondemos en un plazo máximo de 10 días hábiles.',
+      },
+    ],
+    draft: 'Borrador pendiente de revisión legal.',
+    link: 'Privacidad',
   },
   footer: {
     rights: 'Chambea Simple',

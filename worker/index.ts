@@ -17,10 +17,11 @@ const HEADERS: Record<string, string> = {
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
   'X-Frame-Options': 'DENY',
-  // The site runs no JavaScript at all, so no script may run: an injected one would be inert.
+  // The only script allowed is the theme switch, by its hash (src/layouts/theme.ts): any other
+  // script, injected or not, does not run.
   // Styles are inlined by the build; JSON-LD is data, not script, and is not affected.
   'Content-Security-Policy':
-    "default-src 'self'; script-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'self' https://agenda.chambasimple.com; frame-ancestors 'none'; upgrade-insecure-requests",
+    "default-src 'self'; script-src 'sha256-p3mhDqiwtgsUvR6GI+J8dYJW1WTgh7mgc8elhjs+BgE='; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'self' https://agenda.chambasimple.com; frame-ancestors 'none'; upgrade-insecure-requests",
 };
 
 // A page URL (no extension) maps to its Markdown twin: / → /index.md, /en → /en.md.
@@ -71,6 +72,10 @@ function finish(response: Response, url: URL) {
   const out = new Response(response.body, response);
   for (const [k, v] of Object.entries(HEADERS)) out.headers.set(k, v);
   out.headers.append('Vary', 'Accept');
+  // no-transform: Cloudflare must not rewrite our pages (its zone features inject scripts, like the
+  // RUM beacon, that break the zero-JS budget and trip the CSP).
+  const cache = out.headers.get('Cache-Control');
+  out.headers.set('Cache-Control', cache ? `${cache}, no-transform` : 'no-transform');
   if (url.hostname !== DOMAIN) out.headers.set('X-Robots-Tag', 'noindex');
   else out.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   return out;
@@ -96,6 +101,11 @@ async function respond(request: Request, env: Env, url: URL): Promise<Response> 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    // One host: www.chambasimple.com redirects for good to the apex, path and query kept.
+    if (url.hostname === `www.${DOMAIN}`) {
+      url.hostname = DOMAIN;
+      return Response.redirect(url.href, 308);
+    }
     const response = await respond(request, env, url);
     if (request.method === 'GET')
       env.VISITS?.writeDataPoint(pointOf(request, url, response.status));

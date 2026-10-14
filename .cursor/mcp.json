@@ -3,6 +3,15 @@
     "chrome-devtools": {
       "command": "npx",
       "args": ["-y", "chrome-devtools-mcp@1.10.1", "--isolated", "--performance-crux=false"]
+    },
+    "cloudflare-docs": {
+      "url": "https://docs.mcp.cloudflare.com/mcp"
+    },
+    "cloudflare-observability": {
+      "url": "https://observability.mcp.cloudflare.com/mcp"
+    },
+    "cloudflare-graphql": {
+      "url": "https://graphql.mcp.cloudflare.com/mcp"
     }
   }
 }
