@@ -58,6 +58,8 @@ function lighthouse(url: string, device: (typeof DEVICES)[number]): Report {
       '--output=json',
       `--output-path=${out}`,
       '--chrome-flags=--headless=new',
+      // Not a visitor: the Worker leaves requests with this header out of the analytics.
+      '--extra-headers={"x-chambea-check":"1"}',
       ...(device === 'desktop' ? ['--preset=desktop'] : []),
     ],
     { stdio: ['ignore', 'ignore', 'inherit'] },
@@ -123,7 +125,7 @@ function problems(report: Report, device: string, ci: boolean, preview = false):
 }
 
 async function htmlProblems(url: string) {
-  const get = () => fetch(url, { headers: { 'accept-language': 'en' } });
+  const get = () => fetch(url, { headers: { 'accept-language': 'en', 'x-chambea-check': '1' } });
   const html = await (await get().catch(get)).text(); // one retry: a keep-alive reset after Lighthouse
   const kb = gzipSync(html).length / 1024;
   const found =

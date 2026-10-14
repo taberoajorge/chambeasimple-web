@@ -4,8 +4,15 @@ type Fetch = (url: string, init?: RequestInit) => Promise<Response>;
 
 type Check = { name: string; run: (base: string, get: Fetch) => Promise<string | null> };
 
-const html = { headers: { accept: 'text/html' }, redirect: 'manual' as const };
-const markdown = { headers: { accept: 'text/markdown' }, redirect: 'manual' as const };
+// x-chambea-check keeps these requests out of the visit analytics (worker/index.ts).
+const html = {
+  headers: { accept: 'text/html', 'x-chambea-check': '1' },
+  redirect: 'manual' as const,
+};
+const markdown = {
+  headers: { accept: 'text/markdown', 'x-chambea-check': '1' },
+  redirect: 'manual' as const,
+};
 
 const CHECKS: Check[] = [
   {

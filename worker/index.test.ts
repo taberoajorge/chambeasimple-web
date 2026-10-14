@@ -92,6 +92,11 @@ test('each page view writes one data point, with nothing that identifies a perso
     '200',
   ]);
   assert.ok(!JSON.stringify(points).includes('Safari'), 'no user agent string is stored');
+  const preview = new Request('https://pr-2-chambeasimple-web.example.workers.dev/en');
+  const check = new Request('https://chambasimple.com/en', { headers: { 'x-chambea-check': '1' } });
+  for (const r of [preview, check])
+    await worker.fetch(r, { ...env, VISITS: { writeDataPoint: (p) => points.push(p) } });
+  assert.equal(points.length, 1, 'previews and our own checks are not visits');
 });
 
 test('visitors are people, bots or AI agents; own-site referrers and bad referers are blank', () => {
