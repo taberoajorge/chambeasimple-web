@@ -14,11 +14,12 @@
   // Daily check that the Google token still works (src/index.ts, scheduled).
   "triggers": { "crons": ["0 11 * * *"] },
   "vars": {
-    // Filled once the Google account hola@chambasimple.com and its agenda calendar exist.
-    "AGENDA_CALENDAR": "",
-    "PEOPLE": ""
+    // Turnstile widget "chambeasimple-agenda" (Managed mode). The site key is public; the secret is
+    // TURNSTILE_SECRET.
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAFW5Q1ffISVM0M9j"
   },
   // Secrets (wrangler secret put, never in the repo): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
-  // GOOGLE_REFRESH_TOKEN, FORM_SECRET; optional TURNSTILE_SITE_KEY (var) and TURNSTILE_SECRET.
+  // GOOGLE_REFRESH_TOKEN (of hola@chambasimple.com), AGENDA_CALENDAR (the app's own calendar id),
+  // PEOPLE (the owners' calendar emails, comma-separated), FORM_SECRET, TURNSTILE_SECRET.
   "observability": { "enabled": true }
 }

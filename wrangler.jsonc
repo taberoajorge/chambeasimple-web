@@ -18,8 +18,6 @@
     "run_worker_first": ["/", "/en", "/en/*", "/casos/*", "/privacidad"]
   },
   // Cookieless page views (worker/index.ts, pointOf). Free tier: 100k data points a day.
-  // Off until Analytics Engine is enabled once in the dashboard (Workers > Analytics Engine);
-  // then uncomment. The Worker runs fine without it.
-  // "analytics_engine_datasets": [{ "binding": "VISITS", "dataset": "chambeasimple_visits" }],
+  "analytics_engine_datasets": [{ "binding": "VISITS", "dataset": "chambeasimple_visits" }],
   "observability": { "enabled": true }
 }
