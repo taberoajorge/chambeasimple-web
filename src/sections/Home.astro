@@ -118,21 +118,25 @@ const ourClients = clients(import.meta.env.DEV);
 </Section>
 
 <Section id={t.process.id} title={t.process.title} intro={t.process.intro}>
-  <CardGrid cols={5} ordered>
+  {/* One row per step: five columns made tall, narrow boxes that were hard to read. */}
+  <ol class="mt-10 divide-y divide-line rounded-2xl border border-line bg-card">
     {
       t.process.steps.map((step, i) => (
-        <Card title={step.title}>
-          <span slot="eyebrow" aria-hidden="true" class="flex size-9 items-center justify-center rounded-full bg-mint font-bold text-ink">
+        <li class="grid gap-x-8 gap-y-3 p-6 md:grid-cols-[auto_1fr_1fr] md:p-8">
+          <span aria-hidden="true" class="flex size-9 items-center justify-center rounded-full bg-mint font-bold text-ink">
             {i + 1}
           </span>
-          {step.body}
-          <p slot="footer" class="border-t border-line pt-3 text-sm">
+          <div>
+            <h3 class="text-xl font-bold text-balance">{step.title}</h3>
+            <p class="mt-2 text-muted">{step.body}</p>
+          </div>
+          <p class="border-t border-line pt-3 text-sm md:border-t-0 md:border-l md:pt-1 md:pl-8">
             <strong>{t.process.gets}:</strong> {step.gets}
           </p>
-        </Card>
+        </li>
       ))
     }
-  </CardGrid>
+  </ol>
   <div class="mt-8 rounded-2xl border border-line bg-card p-6 md:p-8">
     <h3 class="text-xl font-bold">{t.process.pricing.title}</h3>
     <ul class="mt-4 grid gap-2 text-muted md:grid-cols-3 md:gap-6">

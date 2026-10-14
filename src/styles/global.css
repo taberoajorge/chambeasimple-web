@@ -64,6 +64,9 @@ html {
   background: var(--bg);
   color: var(--text);
   scroll-behavior: smooth;
+  /* The scrollbar's room is kept from the first paint, so centered content never jumps sideways
+     when the page grows taller than the window (a CLS that failed CI once). */
+  scrollbar-gutter: stable;
   -webkit-text-size-adjust: 100%;
 }
 
