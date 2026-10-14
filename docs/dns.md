@@ -14,8 +14,11 @@ Zona en Cloudflare (plan gratis), cuenta de Alex. Nameservers asignados: `anna.n
 | CNAME | `dkim02._domainkey` | `dkim02._domainkey.simplelogin.co` |
 | CNAME | `dkim03._domainkey` | `dkim03._domainkey.simplelogin.co` |
 | TXT | `_dmarc` | `v=DMARC1; p=quarantine; pct=100; adkim=s; aspf=s` |
+| TXT | `@` | `google-site-verification=…` (Google Postmaster Tools, cuenta hola@) |
 
 Verificado el 2026-10-14: los nameservers de Cloudflare respondían exactamente lo mismo que Namecheap antes del cambio. La importación automática de Cloudflare trajo solo uno de los tres DKIM, y con proxy: se corrigió a mano. Si se repite la importación, revisar esto.
+
+Prueba en mail-tester (2026-10-14, desde Proton por un alias inverso): 8,9/10. SPF, DKIM y DMARC pasan y la IP no está en listas negras. Lo que resta: dominio de menos de 28 días (`FROM_FMBLA_NEWDOM28`, se va solo) y LinkedIn, que responde 999 a los robots (falso enlace roto). Si un correo a Gmail cae en spam, es reputación del dominio nuevo, no configuración: Postmaster Tools (dominio verificado) muestra la reputación cuando hay volumen.
 
 ## Web
 
