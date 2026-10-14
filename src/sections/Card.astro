@@ -1,0 +1,35 @@
+---
+// One card, always four rows: eyebrow, title, body, footer. Inside a CardGrid the rows are a
+// subgrid, so the cards of one row share them: titles, bodies and footers line up across cards
+// whatever their length. Unused rows collapse to zero height and keep the alignment.
+interface Props {
+  title: string;
+  // box: bordered card. rule: a mint rule on the left, for short lists of points.
+  variant?: 'box' | 'rule';
+  // Takes the whole row: for the one point that leads the list.
+  wide?: boolean;
+}
+
+const { title, variant = 'box', wide = false } = Astro.props;
+---
+
+<li
+  class:list={[
+    'row-span-4 grid grid-rows-subgrid gap-y-0',
+    variant === 'box' ? 'rounded-2xl border border-line p-6' : 'border-l-4 border-mint pl-5',
+    wide && 'md:col-span-full',
+  ]}
+>
+  <div>{Astro.slots.has('eyebrow') && <div class="mb-3"><slot name="eyebrow" /></div>}</div>
+  <h3 class="text-xl font-bold text-balance">{title}</h3>
+  <div class="mt-2 text-muted"><slot /></div>
+  <div>
+    {
+      Astro.slots.has('footer') && (
+        <div class="mt-4">
+          <slot name="footer" />
+        </div>
+      )
+    }
+  </div>
+</li>

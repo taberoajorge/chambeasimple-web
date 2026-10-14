@@ -1,0 +1,20 @@
+schema: spec-driven
+
+context: |
+  Language: es
+  All artifacts must be written in es.
+  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+
+  Project: sitio web de Chambea Simple (chambasimple.com), consultora peruana de software a la medida
+  de Sandra y Jorge Taberoa. Lema: "Hacemos software para la buena chamba". Paleta del logo: fondo
+  casi negro verdoso (#02130F), verde menta (#62F0BB) y blanco. Sitio bilingüe (es por defecto, en),
+  estático, mobile-first y desktop a la par. Mismo estándar que taberoa-portfolio: Lighthouse 100 en
+  las cuatro categorías, SEO técnico, llms.txt, repo AI-native con hooks, skills y CI.
+  Casos de éxito solo con datos reales y aprobados por el cliente; nunca cifras inventadas.
+
+rules:
+  tasks:
+    - 'Cada tarea nombra los archivos que toca y termina con "Se verifica …": el comando, check o captura que lo demuestra.'
+    - 'No se marca una tarea como hecha hasta que su verificación corrió y pasó.'
+    - 'El trabajo visual se verifica en build de producción, a 390 px y a 1440 px, con movimiento reducido y sin JS.'
+    - 'Los pasos hacia afuera (repo público, Cloudflare, DNS, correo) van al final y requieren el visto bueno de los dueños.'

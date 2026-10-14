@@ -1,0 +1,241 @@
+---
+// The home page, both languages, in the order a buyer decides (spec sitio-comercial).
+// Sections are built from Section, CardGrid and Card, so every card lines up the same way.
+import { clientOf, published } from '../content/cases.ts';
+import { clients } from '../content/clients.ts';
+import type { Content } from '../content/es.ts';
+import { faqItems, type Lang, mailto, PATHS, SITE, TEAM } from '../content/site.ts';
+import Card from './Card.astro';
+import CardGrid from './CardGrid.astro';
+import Section from './Section.astro';
+
+interface Props {
+  t: Content;
+  lang: Lang;
+}
+
+const { t, lang } = Astro.props;
+const cases = published(import.meta.env.DEV);
+const ourClients = clients(import.meta.env.DEV);
+const contact = mailto(t.cta.mailSubject, t.cta.mailBody);
+---
+
+<section
+  class="mx-auto grid max-w-6xl items-center gap-12 px-5 pt-12 pb-16 md:px-8 md:pt-24 md:pb-28 lg:grid-cols-[1.5fr_1fr]"
+>
+  <div>
+    <h1
+      class="max-w-4xl text-4xl leading-[1.08] font-extrabold tracking-tight text-balance md:text-6xl"
+    >
+      <span class="mb-3 block text-lg font-bold tracking-normal text-accent md:text-xl"
+        >{SITE.name}<span class="sr-only">:</span></span
+      >
+      {' '}{t.hero.title}
+    </h1>
+    <p class="mt-5 text-xl font-semibold md:text-2xl">{t.hero.lema}</p>
+    <p class="mt-5 max-w-2xl text-lg text-muted">{t.hero.lead}</p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href={contact} class="btn-primary">{t.cta.primary}</a>
+      <a href={`#${t.cases.id}`} class="btn-secondary">{t.hero.secondary}</a>
+    </div>
+    <p class="mt-4 text-sm text-muted">{t.hero.note}</p>
+  </div>
+  <!-- Desktop only: the method at a glance. The full section below says it again for everyone. -->
+  <div aria-hidden="true" class="hidden rounded-3xl border border-line bg-surface p-8 lg:block">
+    <p class="text-sm font-bold tracking-wide text-accent uppercase">{t.process.title}</p>
+    <ol class="mt-6 space-y-5">
+      {
+        t.process.steps.map((step, i) => (
+          <li class="flex items-start gap-4">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-mint text-sm font-bold text-ink">
+              {i + 1}
+            </span>
+            <span>
+              <span class="block font-bold">{step.title}</span>
+              <span class="block text-sm text-muted">{step.gets}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+{
+  ourClients.length > 0 && (
+    <section aria-labelledby="clients-h" class="border-t border-line">
+      <div class="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 md:flex-row md:items-center md:gap-10 md:px-8">
+        <h2 id="clients-h" class="text-sm font-bold tracking-wide text-muted uppercase md:max-w-40">
+          {t.clients.title}
+        </h2>
+        <ul class="flex flex-wrap items-center gap-4">
+          {ourClients.map((c) => {
+            const study = cases.find((k) => k.client === c.id);
+            const href = study ? PATHS[lang].case(study[lang].slug) : c.url;
+            return (
+              <li>
+                {/* A light plate in both themes: logos are drawn for white backgrounds. */}
+                <a href={href} class="flex min-h-11 items-center rounded-xl border border-line bg-white px-4 py-2 hover:border-accent">
+                  {c.logo ? (
+                    <img src={c.logo.src} width={c.logo.width} height={c.logo.height} alt={c.name} loading="lazy" decoding="async" class="h-12 w-auto" />
+                  ) : (
+                    <span class="text-lg font-bold text-ink">{c.name}</span>
+                  )}
+                  <span class="sr-only"> ({t.clients.country[c.country]})</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<Section id={t.solutions.id} title={t.solutions.title} intro={t.solutions.intro} tone="surface">
+  <CardGrid cols={2}>
+    {
+      t.solutions.items.map((s) => {
+        const proof = cases.filter((c) => c.solutions.includes(s.id as (typeof c.solutions)[number]));
+        return (
+          <Card title={s.title}>
+            {s.body}
+            {proof.length > 0 && (
+              <ul slot="footer" class="space-y-1">
+                {proof.map((c) => (
+                  <li>
+                    <a href={PATHS[lang].case(c[lang].slug)} class="font-semibold text-accent underline underline-offset-4">
+                      {t.solutions.seeCase}: {c[lang].title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+        );
+      })
+    }
+  </CardGrid>
+</Section>
+
+<Section id={t.process.id} title={t.process.title} intro={t.process.intro}>
+  <CardGrid cols={5} ordered>
+    {
+      t.process.steps.map((step, i) => (
+        <Card title={step.title}>
+          <span slot="eyebrow" aria-hidden="true" class="flex size-9 items-center justify-center rounded-full bg-mint font-bold text-ink">
+            {i + 1}
+          </span>
+          {step.body}
+          <p slot="footer" class="border-t border-line pt-3 text-sm">
+            <strong>{t.process.gets}:</strong> {step.gets}
+          </p>
+        </Card>
+      ))
+    }
+  </CardGrid>
+  <div class="mt-8 rounded-2xl border border-line bg-surface p-6 md:p-8">
+    <h3 class="text-xl font-bold">{t.process.pricing.title}</h3>
+    <ul class="mt-4 grid gap-2 text-muted md:grid-cols-3 md:gap-6">
+      {t.process.pricing.items.map((item) => <li>{item}</li>)}
+    </ul>
+    {SITE.price.pen && <p class="mt-4 font-semibold">{t.process.pricing.from(SITE.price)}</p>}
+  </div>
+</Section>
+
+<Section id={t.cases.id} title={t.cases.title} intro={t.cases.intro} tone="surface">
+  <CardGrid cols={3}>
+    {
+      cases.map((c) => (
+        <Card title={c[lang].title}>
+          <p slot="eyebrow" class="text-sm font-semibold text-accent">
+            {t.cases.status[c.status]}
+            {clientOf(c) && <span class="text-muted"> · {clientOf(c)?.name}</span>}
+          </p>
+          {c[lang].summary}
+          <a slot="footer" href={PATHS[lang].case(c[lang].slug)} class="flex min-h-11 items-center font-semibold text-accent underline underline-offset-4">
+            {t.cases.readMore}
+            <span class="sr-only">: {c[lang].title}</span>
+          </a>
+        </Card>
+      ))
+    }
+  </CardGrid>
+</Section>
+
+<Section id={t.ai.id} title={t.ai.title} intro={t.ai.intro} tone="surface">
+  <p class="mt-6 max-w-2xl border-l-4 border-mint pl-5">
+    <strong class="block text-2xl font-extrabold">{t.ai.fact}</strong>
+    <a href={t.ai.source.url} rel="noopener" class="text-sm text-muted underline underline-offset-4">{t.ai.source.label}</a>
+  </p>
+  <CardGrid cols={2}>
+    {
+      [t.ai.works, t.ai.limits].map((group) => (
+        <Card title={group.title}>
+          <ul class="list-disc space-y-2 pl-5 marker:text-accent">
+            {group.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </Card>
+      ))
+    }
+  </CardGrid>
+  <a href={mailto(t.ai.mailSubject, t.ai.mailBody)} class="btn-primary mt-8">{t.ai.cta}</a>
+</Section>
+
+<Section id="why" title={t.why.title}>
+  <CardGrid cols={2}>
+    {t.why.items.map((item, i) => <Card title={item.title} variant="rule" wide={i === 0}>{item.body}</Card>)}
+  </CardGrid>
+</Section>
+
+<Section id="team" title={t.team.title} intro={t.team.intro} tone="surface">
+  <CardGrid cols={2}>
+    {
+      TEAM.map((p) => (
+        <Card title={p.name}>
+          <p slot="eyebrow" class="text-sm font-semibold text-accent">{t.team.people[p.id].role}</p>
+          {t.team.people[p.id].bio}
+          {SITE.showLinkedIn && (
+            <a slot="footer" href={p.linkedin} rel="me noopener" class="flex min-h-11 items-center font-semibold underline underline-offset-4">
+              {t.team.linkedin(p.name)}
+            </a>
+          )}
+        </Card>
+      ))
+    }
+  </CardGrid>
+</Section>
+
+<Section id="faq" title={t.faq.title}>
+  <div class="mt-8 divide-y divide-line border-y border-line">
+    {
+      faqItems(t).map((f) => (
+        <details class="group py-2">
+          <summary class="flex min-h-12 cursor-pointer items-center justify-between gap-4 text-lg font-semibold">
+            {f.q}
+            <span aria-hidden="true" class="text-2xl text-accent transition-transform group-open:rotate-45 motion-reduce:transition-none">
+              +
+            </span>
+          </summary>
+          <p class="pb-4 text-muted">{f.a}</p>
+        </details>
+      ))
+    }
+  </div>
+</Section>
+
+<section aria-labelledby="contact-h" class="border-t border-line bg-ink text-[#effbf6]">
+  <div class="mx-auto max-w-6xl px-5 py-16 text-center md:px-8 md:py-24">
+    <h2 id="contact-h" class="text-3xl font-extrabold tracking-tight text-balance md:text-4xl">
+      {t.contact.title}
+    </h2>
+    <p class="mx-auto mt-4 max-w-xl text-lg text-[#a3b8b0]">{t.contact.body}</p>
+    <a href={contact} class="btn-primary mt-8">{t.cta.primary}</a>
+    <p class="mt-4 text-[#a3b8b0]">
+      {t.contact.email}{' '}
+      <a href={`mailto:${SITE.email}`} class="font-semibold text-mint underline underline-offset-4"
+        >{SITE.email}</a
+      >
+    </p>
+  </div>
+</section>

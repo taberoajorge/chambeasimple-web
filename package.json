@@ -1,0 +1,44 @@
+{
+  "name": "chambeasimple-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.7",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "node scripts/run.ts dev",
+    "build": "astro build && node scripts/checks/seo.ts",
+    "preview": "node scripts/run.ts preview",
+    "check": "pnpm check:biome && pnpm typecheck && pnpm test && pnpm check:boundaries && pnpm knip && pnpm check:spec && node scripts/agent-hooks.ts certify",
+    "check:biome": "biome check .",
+    "typecheck": "astro check",
+    "test": "node --test 'src/**/*.test.ts' 'scripts/**/*.test.ts' 'worker/**/*.test.ts'",
+    "check:boundaries": "node scripts/checks/boundaries.ts",
+    "knip": "knip",
+    "check:spec": "pnpm dlx @fission-ai/openspec@1.13.2 validate --all --strict",
+    "perf": "node scripts/checks/perf.ts",
+    "parity": "node scripts/checks/parity.ts",
+    "delivery:branch": "node scripts/delivery.ts branch",
+    "delivery:pr-check": "node scripts/delivery.ts pr-check",
+    "delivery:pr-create": "node scripts/delivery.ts pr-create",
+    "delivery:merge": "node scripts/delivery.ts merge",
+    "deploy": "pnpm build && wrangler deploy",
+    "preview:worker": "pnpm build && wrangler dev --port 8787"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "astro": "7.3.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@biomejs/biome": "2.5.15",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "24.19.2",
+    "knip": "6.41.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "wrangler": "4.151.0"
+  }
+}

@@ -1,0 +1,38 @@
+# Dependencies and build output
+node_modules/
+dist/
+.astro/
+coverage/
+*.tsbuildinfo
+
+# Local checks and captures
+artifacts/
+shots/
+.lighthouseci/
+
+# Environment and deployment links
+.env
+.env*
+!.env.example
+*.pem
+
+# Agent clients: local settings and state stay on this machine
+*.local.json
+*.local.md
+.claude/settings.local.json
+.claude/hooks/state/
+.claude/worktrees/
+.devin/*.local.json
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/mcp.json
+*.swp
+*.swo
+npm-debug.log*
+
+# Wrangler local state
+.wrangler/
+.dev.vars*

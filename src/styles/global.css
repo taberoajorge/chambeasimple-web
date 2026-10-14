@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+/* Brand tokens. Each theme follows the visitor's system setting; every text pair is ≥ 4.5:1
+   (measured in src/styles/contrast.test.ts). Mint is never text on a light background (1.4:1):
+   it is the fill of the one primary button, with ink text on it, in both themes. */
+:root {
+  color-scheme: light dark;
+  --ink: #02130f;
+  --mint: #62f0bb;
+  --bg: #f7fbf9;
+  --surface: #ffffff;
+  --text: #02130f;
+  --muted: #4a5e57;
+  --accent: #0a6b4b;
+  --line: #d5e3dd;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #02130f;
+    --surface: #0b231c;
+    --text: #effbf6;
+    --muted: #a3b8b0;
+    --accent: #62f0bb;
+    --line: #1f3a31;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --muted: var(--text);
+    --line: var(--text);
+  }
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-mint: var(--mint);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-line: var(--line);
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Room for the phone's fixed contact bar, so it never covers the last lines. */
+body {
+  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 0;
+  }
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* In the components layer, so utilities such as `hidden md:inline-flex` can override them. */
+@layer components {
+  /* The one primary action: same look in both themes, so it is always recognisable. */
+  .btn-primary {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    background: var(--mint);
+    color: var(--ink);
+    padding: 0 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .btn-primary:hover {
+    filter: brightness(0.95);
+  }
+
+  .btn-primary:focus-visible {
+    outline-color: var(--text);
+  }
+
+  /* Secondary actions read as secondary: outline only. */
+  .btn-secondary {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid var(--muted); /* a control's edge needs 3:1 (WCAG 1.4.11) */
+    color: var(--text);
+    padding: 0 1.25rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+  }
+}
+
+@media (forced-colors: active) {
+  .btn-primary,
+  .btn-secondary {
+    border: 1px solid ButtonText;
+  }
+}

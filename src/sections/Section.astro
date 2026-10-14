@@ -1,0 +1,25 @@
+---
+// Every content section: same width, spacing, heading and optional intro, labelled by its heading.
+interface Props {
+  id: string;
+  title: string;
+  intro?: string;
+  tone?: 'bg' | 'surface';
+}
+
+const { id, title, intro, tone = 'bg' } = Astro.props;
+---
+
+<section
+  id={id}
+  aria-labelledby={`${id}-h`}
+  class:list={['border-t border-line', tone === 'surface' && 'bg-surface']}
+>
+  <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+    <h2 id={`${id}-h`} class="text-3xl font-extrabold tracking-tight text-balance md:text-4xl">
+      {title}
+    </h2>
+    {intro && <p class="mt-4 max-w-2xl text-lg text-muted">{intro}</p>}
+    <slot />
+  </div>
+</section>

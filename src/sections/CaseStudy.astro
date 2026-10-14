@@ -1,0 +1,61 @@
+---
+import { type Case, clientOf } from '../content/cases.ts';
+import type { Content } from '../content/es.ts';
+import { type Lang, mailto, PATHS } from '../content/site.ts';
+
+interface Props {
+  t: Content;
+  lang: Lang;
+  item: Case;
+}
+
+const { t, lang, item } = Astro.props;
+const c = item[lang];
+const client = clientOf(item);
+const h2 = 'mt-12 text-2xl font-extrabold tracking-tight';
+---
+
+<article class="mx-auto max-w-3xl px-5 py-12 md:px-8 md:py-20">
+  <p class="text-sm font-semibold text-accent">
+    {t.cases.status[item.status]}
+  </p>
+  <h1 class="mt-3 text-4xl leading-tight font-extrabold tracking-tight text-balance md:text-5xl">
+    {c.title}
+  </h1>
+  <p class="mt-5 text-xl text-muted">{c.summary}</p>
+  {client && (
+  <p class="mt-6">
+    <strong>{t.cases.page.client}:</strong>{' '}
+    <a href={client.url} rel="noopener" class="text-accent underline underline-offset-4">
+      {client.name}
+    </a>
+  </p>
+)}
+
+  <h2 class={h2}>{t.cases.page.problem}</h2>
+  <p class="mt-3 text-lg">{c.problem}</p>
+
+  <h2 class={h2}>{t.cases.page.built}</h2>
+  <ul class="mt-3 list-disc space-y-2 pl-6 text-lg marker:text-accent">
+    {c.built.map((b) => <li>{b}</li>)}
+  </ul>
+
+  <h2 class={h2}>{t.cases.page.limits}</h2>
+  <ul class="mt-3 list-disc space-y-2 pl-6 text-lg marker:text-accent">
+    {c.limits.map((l) => <li>{l}</li>)}
+  </ul>
+
+  <h2 class={h2}>{t.cases.page.outcome}</h2>
+  <p class="mt-3 text-lg">{c.outcome}</p>
+
+  <div class="mt-14 rounded-2xl border border-line bg-surface p-6 md:p-8">
+    <h2 class="text-2xl font-extrabold tracking-tight">{t.cases.page.nextStep}</h2>
+    <p class="mt-2 text-muted">{t.contact.body}</p>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href={mailto(t.cta.mailSubject, `${t.cta.mailBody}\n\n(${c.title})`)} class="btn-primary"
+        >{t.cta.primary}</a
+      >
+      <a href={PATHS[lang].home} class="btn-secondary">{t.cases.page.back}</a>
+    </div>
+  </div>
+</article>

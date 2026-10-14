@@ -1,0 +1,115 @@
+---
+import type { Content } from '../content/es.ts';
+import { invoicing, type Lang, mailto, PATHS, SITE } from '../content/site.ts';
+import '../styles/global.css';
+
+interface Props {
+  t: Content;
+  lang: Lang;
+  title: string;
+  description: string;
+  // This page's path in each language, for canonical and hreflang.
+  paths: Record<Lang, string>;
+  schema: object;
+}
+
+const { t, lang, title, description, paths, schema } = Astro.props;
+const url = (path: string) => new URL(path, SITE.url).href;
+const other: Lang = lang === 'es' ? 'en' : 'es';
+const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
+---
+
+<!doctype html>
+<html lang={t.lang}>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{title}</title>
+    <meta name="description" content={description}>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href={url(paths[lang])}>
+    <link rel="alternate" hreflang="es" href={url(paths.es)}>
+    <link rel="alternate" hreflang="en" href={url(paths.en)}>
+    <link rel="alternate" hreflang="x-default" href={url(paths.es)}>
+    <link rel="alternate" type="text/markdown" href={markdown}>
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7fbf9">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#02130f">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content={SITE.name}>
+    <meta property="og:title" content={title}>
+    <meta property="og:description" content={description}>
+    <meta property="og:url" content={url(paths[lang])}>
+    <meta property="og:locale" content={t.lang.replace('-', '_')}>
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body class="bg-bg font-sans text-text antialiased">
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-surface focus:p-3"
+    >
+      {t.nav.skip}
+    </a>
+    <header class="border-b border-line">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 md:px-8">
+        <a
+          href={PATHS[lang].home}
+          class="flex min-h-11 items-center text-xl font-extrabold tracking-tight lowercase"
+        >
+          chambea<span class="text-accent">simple</span>
+        </a>
+        <nav aria-label={t.nav.label} class="flex items-center gap-1 md:gap-6">
+          <ul class="hidden items-center gap-6 md:flex">
+            {[t.solutions, t.process, t.cases].map((s) => (
+  <li>
+    <a href={`${PATHS[lang].home}#${s.id}`} class="text-muted hover:text-text">
+      {s.title}
+    </a>
+  </li>
+))}
+          </ul>
+          <a
+            href={paths[other]}
+            hreflang={other}
+            lang={other}
+            class="flex min-h-11 min-w-11 items-center justify-center px-2 text-sm font-semibold"
+          >
+            {t.nav.switchTo.label}
+          </a>
+          <a
+            href={mailto(t.cta.mailSubject, t.cta.mailBody)}
+            class="btn-primary hidden md:inline-flex"
+            >{t.cta.primary}</a
+          >
+        </nav>
+      </div>
+    </header>
+    <main id="contenido" tabindex="-1">
+      <slot />
+    </main>
+    <footer class="border-t border-line">
+      <div
+        class="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-8 text-sm text-muted md:flex-row md:justify-between md:px-8"
+      >
+        <p>
+          © {new Date().getFullYear()} {t.footer.rights}.{' '}
+          {invoicing().length
+            ? invoicing()
+                .map((b) => `${b.legalName} · ${b.doc} ${b.taxId}`)
+                .join(' · ')
+            : t.footer.inFormation}
+        </p>
+        <p class="flex flex-wrap gap-x-4">
+          <a href={`mailto:${SITE.email}`} class="underline">{SITE.email}</a>
+          <a href={markdown} class="underline">{t.footer.markdown}</a>
+        </p>
+      </div>
+    </footer>
+    <div
+      class="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/95 px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:hidden"
+    >
+      <a href={mailto(t.cta.mailSubject, t.cta.mailBody)} class="btn-primary w-full"
+        >{t.cta.primary}</a
+      >
+    </div>
+  </body>
+</html>

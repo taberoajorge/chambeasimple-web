@@ -1,0 +1,19 @@
+---
+// One 404 for both languages: Spanish first, English below, since the URL says nothing reliable.
+import { en } from '../content/en.ts';
+import { es as t } from '../content/es.ts';
+import { PATHS } from '../content/site.ts';
+import Base from '../layouts/Base.astro';
+---
+
+<Base t={t} lang="es" title={t.notFound.title} description={t.notFound.body} paths={{ es: '/404', en: '/404' }} schema={{}}>
+  <div class="mx-auto max-w-3xl px-5 py-24 md:px-8">
+    <h1 class="text-4xl font-extrabold tracking-tight">{t.notFound.title}</h1>
+    <p class="mt-4 text-lg text-muted">{t.notFound.body}</p>
+    <p lang="en" class="mt-2 text-muted">{en.notFound.title}. {en.notFound.body}</p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href={PATHS.es.home} class="btn-primary">{t.notFound.home}</a>
+      <a href={PATHS.en.home} hreflang="en" lang="en" class="btn-secondary">{en.notFound.home}</a>
+    </div>
+  </div>
+</Base>

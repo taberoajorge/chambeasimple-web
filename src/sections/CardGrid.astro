@@ -1,0 +1,18 @@
+---
+// The list that holds Cards. Columns grow with the screen; `ordered` for steps that have an order.
+interface Props {
+  cols: 2 | 3 | 5;
+  ordered?: boolean;
+}
+
+const { cols, ordered = false } = Astro.props;
+// Literal class names, so Tailwind sees them.
+const COLS = {
+  2: 'md:grid-cols-2',
+  3: 'md:grid-cols-2 lg:grid-cols-3',
+  5: 'md:grid-cols-2 lg:grid-cols-5',
+};
+const List = ordered ? 'ol' : 'ul';
+---
+
+<List class:list={['mt-10 grid gap-x-4 gap-y-4', COLS[cols]]}><slot /></List>

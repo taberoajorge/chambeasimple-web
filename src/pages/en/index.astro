@@ -1,0 +1,18 @@
+---
+import { en as t } from '../../content/en.ts';
+import { PATHS } from '../../content/site.ts';
+import Base from '../../layouts/Base.astro';
+import { homeSchema } from '../../layouts/schema.ts';
+import Home from '../../sections/Home.astro';
+---
+
+<Base
+  t={t}
+  lang="en"
+  title={t.meta.title}
+  description={t.meta.description}
+  paths={{ es: PATHS.es.home, en: PATHS.en.home }}
+  schema={homeSchema(t, 'en')}
+>
+  <Home t={t} lang="en" />
+</Base>

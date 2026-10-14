@@ -1,0 +1,27 @@
+---
+import { type Case, published } from '../../content/cases.ts';
+import { es as t } from '../../content/es.ts';
+import { PATHS, pageTitle } from '../../content/site.ts';
+import Base from '../../layouts/Base.astro';
+import { caseSchema } from '../../layouts/schema.ts';
+import CaseStudy from '../../sections/CaseStudy.astro';
+
+export const getStaticPaths = () =>
+  published(import.meta.env.DEV).map((item) => ({
+    params: { slug: item.es.slug },
+    props: { item },
+  }));
+
+const { item } = Astro.props as { item: Case };
+---
+
+<Base
+  t={t}
+  lang="es"
+  title={pageTitle(item.es.title)}
+  description={item.es.summary}
+  paths={{ es: PATHS.es.case(item.es.slug), en: PATHS.en.case(item.en.slug) }}
+  schema={caseSchema(t, 'es', item)}
+>
+  <CaseStudy t={t} lang="es" item={item} />
+</Base>

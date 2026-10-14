@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  // the scripts that are run directly; anything else in scripts/ must be imported to count as used
+  "entry": [
+    "scripts/{agent-hooks,commit-msg,delivery,port,run}.ts",
+    "scripts/checks/{boundaries,parity,perf,seo}.ts",
+    "{src,scripts,worker}/**/*.test.ts",
+    "worker/index.ts",
+    ".opencode/plugins/*.ts"
+  ],
+  // entry files are scripts, not libraries: their exports must be used too
+  "includeEntryExports": true,
+  "project": ["src/**/*.{ts,astro,css}", "scripts/**/*.ts", "worker/**/*.ts"]
+}
