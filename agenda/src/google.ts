@@ -8,7 +8,10 @@ export type Google = {
   clientSecret: string;
   refreshToken: string;
   agendaCalendar: string; // id of the secondary calendar the app created
-  people: string[]; // calendars checked for busy blocks and invited (hola@chambasimple.com)
+  people: string[]; // calendars checked for busy blocks (hola@chambasimple.com)
+  // Who gets the invitation besides the visitor. Not the organizer itself: Google never emails an
+  // event's own organizer, so the owners are notified through another alias that forwards to them.
+  notify: string[];
 };
 
 type Fetch = typeof fetch;
@@ -74,7 +77,7 @@ export async function book(g: Google, token: string, b: Booking, get: Fetch = fe
       description: `${b.name} · ${b.company}\n\n${b.need}`,
       start: { dateTime: new Date(b.start).toISOString() },
       end: { dateTime: new Date(b.start + b.minutes * 60_000).toISOString() },
-      attendees: [...g.people.map((email) => ({ email })), { email: b.email, displayName: b.name }],
+      attendees: [...g.notify.map((email) => ({ email })), { email: b.email, displayName: b.name }],
       conferenceData: {
         createRequest: {
           requestId: crypto.randomUUID(),

@@ -8,6 +8,7 @@ const G: Google = {
   refreshToken: 'refresh',
   agendaCalendar: 'agenda@group.calendar.google.com',
   people: ['alex@example.com', 'sandra@example.com'],
+  notify: ['agenda@example.com'],
 };
 
 type Call = { url: string; init?: RequestInit };
@@ -54,7 +55,7 @@ test('busy blocks from every calendar are merged, and an unreadable calendar fai
   await assert.rejects(busy(G, 't', 0, 1, hidden.get), /cannot read sandra/);
 });
 
-test('a booking goes to the agenda calendar with Meet and invites for everyone', async () => {
+test('a booking goes to the agenda calendar with Meet and invites the notify alias and the visitor', async () => {
   const { calls, get } = fake(() => ({ id: 'e1', hangoutLink: 'https://meet.google.com/x' }));
   const out = await book(
     G,
@@ -78,7 +79,7 @@ test('a booking goes to the agenda calendar with Meet and invites for everyone',
   const body = JSON.parse(String(calls[0].init?.body));
   assert.deepEqual(
     body.attendees.map((a: { email: string }) => a.email),
-    [...G.people, 'ana@acme.pe'],
+    [...G.notify, 'ana@acme.pe'],
   );
   assert.equal(body.end.dateTime, '2026-10-20T14:30:00.000Z');
 });

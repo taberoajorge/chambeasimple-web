@@ -20,7 +20,8 @@ export type Env = {
   GOOGLE_CLIENT_SECRET?: string;
   GOOGLE_REFRESH_TOKEN?: string;
   AGENDA_CALENDAR?: string;
-  PEOPLE?: string; // calendars checked for busy time and invited, comma-separated (hola@)
+  PEOPLE?: string; // calendars checked for busy time, comma-separated (hola@)
+  NOTIFY?: string; // aliases invited to every booking so the owners get an email, comma-separated
   FORM_SECRET?: string;
   TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET?: string;
@@ -43,6 +44,10 @@ const google = (env: Env): Google | null =>
         refreshToken: env.GOOGLE_REFRESH_TOKEN,
         agendaCalendar: env.AGENDA_CALENDAR,
         people: env.PEOPLE.split(',').map((p) => p.trim()),
+        notify: (env.NOTIFY ?? '')
+          .split(',')
+          .map((p) => p.trim())
+          .filter(Boolean),
       }
     : null;
 
