@@ -69,6 +69,11 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
   </li>
 ))}
           </ul>
+          <a
+            href={book(lang, 'header')}
+            class="btn-primary hidden md:inline-flex"
+            >{t.cta.primary}</a
+          >
           <button
             id="theme"
             type="button"
@@ -80,19 +85,17 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
               <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
             </svg>
           </button>
+          {/* Last and fixed width, so it sits in the same spot in both languages: a longer
+              button text elsewhere never pushes it under the pointer of someone switching back. */}
           <a
             href={paths[other]}
             hreflang={other}
             lang={other}
-            class="flex min-h-11 min-w-11 items-center justify-center px-2 text-sm font-semibold"
+            class="flex min-h-11 w-11 items-center justify-center text-sm font-semibold"
           >
-            {t.nav.switchTo.label}
+            <span aria-hidden="true">{other.toUpperCase()}</span>
+            <span class="sr-only">{t.nav.switchTo.label}</span>
           </a>
-          <a
-            href={book(lang, 'header')}
-            class="btn-primary hidden md:inline-flex"
-            >{t.cta.primary}</a
-          >
         </nav>
       </div>
     </header>
