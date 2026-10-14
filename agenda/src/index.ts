@@ -120,8 +120,11 @@ async function guard({ request, env, t, page }: Ctx): Promise<Response | null> {
   const ip = request.headers.get('cf-connecting-ip') ?? 'unknown';
   if (env.LIMIT && !(await env.LIMIT.limit({ key: ip })).success)
     return page(429, { error: t.errors.busy });
+  // Only a real other site is refused. Some browsers send "Origin: null" for privacy (Safari, Brave,
+  // private modes); those are people, and the signed stamp plus Turnstile still guard the form.
   const origin = request.headers.get('origin');
-  if (origin && origin !== new URL(request.url).origin)
+  const foreign = origin && origin !== 'null' && origin !== new URL(request.url).origin;
+  if (foreign || request.headers.get('sec-fetch-site') === 'cross-site')
     return new Response('Forbidden', { status: 403 });
   if (Number(request.headers.get('content-length') ?? 0) > LIMITS.body)
     return new Response('Too large', { status: 413 });

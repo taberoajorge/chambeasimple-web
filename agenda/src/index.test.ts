@@ -157,3 +157,9 @@ test('a dead token turns the page into email and /health into 503', async () => 
     /abre pronto/,
   );
 });
+
+test('a privacy browser sending Origin: null can still book; a cross-site post cannot', async () => {
+  assert.equal((await post(env(), {}, { origin: 'null' })).status, 200);
+  const crossSite = { 'sec-fetch-site': 'cross-site' };
+  assert.equal((await post(env(), { slot: String(SLOT + 30 * 60_000) }, crossSite)).status, 403);
+});
