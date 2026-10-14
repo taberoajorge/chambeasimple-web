@@ -16,8 +16,6 @@ export const es = {
   },
   cta: {
     primary: 'Agenda una conversación',
-    mailSubject: 'Quiero conversar sobre un proyecto',
-    mailBody: 'Hola, somos [empresa]. Nos gustaría resolver: ',
   },
   hero: {
     title: 'Software a la medida para empresas',
@@ -152,8 +150,6 @@ export const es = {
       ],
     },
     cta: 'Cuéntanos tu idea',
-    mailSubject: 'Tengo una idea con IA',
-    mailBody: 'Hola, mi idea es: ',
   },
   why: {
     title: 'Por qué trabajar con nosotros',
@@ -235,8 +231,8 @@ export const es = {
   },
   contact: {
     title: '¿Qué quieres resolver?',
-    body: 'Cuéntanos en un correo qué hace tu equipo a mano hoy. Te respondemos para agendar una conversación de 30 minutos, gratis.',
-    email: 'Escríbenos a',
+    body: 'Elige un horario y conversamos 30 minutos por Google Meet, gratis. Cuéntanos qué hace tu equipo a mano hoy y vemos si podemos ayudarte.',
+    email: '¿Prefieres correo? Escríbenos a',
   },
   notFound: {
     title: 'Esta página no existe',

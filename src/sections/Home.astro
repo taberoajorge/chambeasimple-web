@@ -4,7 +4,7 @@
 import { clientOf, published } from '../content/cases.ts';
 import { clients } from '../content/clients.ts';
 import type { Content } from '../content/es.ts';
-import { faqItems, type Lang, mailto, PATHS, SITE, TEAM } from '../content/site.ts';
+import { book, faqItems, type Lang, PATHS, SITE, TEAM } from '../content/site.ts';
 import Card from './Card.astro';
 import CardGrid from './CardGrid.astro';
 import Section from './Section.astro';
@@ -17,7 +17,6 @@ interface Props {
 const { t, lang } = Astro.props;
 const cases = published(import.meta.env.DEV);
 const ourClients = clients(import.meta.env.DEV);
-const contact = mailto(t.cta.mailSubject, t.cta.mailBody);
 ---
 
 <section
@@ -35,7 +34,7 @@ const contact = mailto(t.cta.mailSubject, t.cta.mailBody);
     <p class="mt-5 text-xl font-semibold md:text-2xl">{t.hero.lema}</p>
     <p class="mt-5 max-w-2xl text-lg text-muted">{t.hero.lead}</p>
     <div class="mt-8 flex flex-wrap gap-3">
-      <a href={contact} class="btn-primary">{t.cta.primary}</a>
+      <a href={book(lang, 'hero')} class="btn-primary">{t.cta.primary}</a>
       <a href={`#${t.cases.id}`} class="btn-secondary">{t.hero.secondary}</a>
     </div>
     <p class="mt-4 text-sm text-muted">{t.hero.note}</p>
@@ -179,7 +178,7 @@ const contact = mailto(t.cta.mailSubject, t.cta.mailBody);
       ))
     }
   </CardGrid>
-  <a href={mailto(t.ai.mailSubject, t.ai.mailBody)} class="btn-primary mt-8">{t.ai.cta}</a>
+  <a href={book(lang, 'ai')} class="btn-primary mt-8">{t.ai.cta}</a>
 </Section>
 
 <Section id="why" title={t.why.title}>
@@ -230,7 +229,7 @@ const contact = mailto(t.cta.mailSubject, t.cta.mailBody);
       {t.contact.title}
     </h2>
     <p class="mx-auto mt-4 max-w-xl text-lg text-band-muted">{t.contact.body}</p>
-    <a href={contact} class="btn-primary mt-8">{t.cta.primary}</a>
+    <a href={book(lang, 'contact')} class="btn-primary mt-8">{t.cta.primary}</a>
     <p class="mt-4 text-band-muted">
       {t.contact.email}{' '}
       <a href={`mailto:${SITE.email}`} class="font-semibold text-mint underline underline-offset-4"

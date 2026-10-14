@@ -1,6 +1,6 @@
 ---
 import type { Content } from '../content/es.ts';
-import { invoicing, type Lang, mailto, PATHS, SITE } from '../content/site.ts';
+import { book, invoicing, type Lang, PATHS, SITE } from '../content/site.ts';
 import '../styles/global.css';
 import { THEME_SCRIPT } from './theme.ts';
 
@@ -89,7 +89,7 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
             {t.nav.switchTo.label}
           </a>
           <a
-            href={mailto(t.cta.mailSubject, t.cta.mailBody)}
+            href={book(lang, 'header')}
             class="btn-primary hidden md:inline-flex"
             >{t.cta.primary}</a
           >
@@ -122,7 +122,7 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
     <div
       class="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/95 px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:hidden"
     >
-      <a href={mailto(t.cta.mailSubject, t.cta.mailBody)} class="btn-primary w-full"
+      <a href={book(lang, 'mobile-bar')} class="btn-primary w-full"
         >{t.cta.primary}</a
       >
     </div>

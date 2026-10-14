@@ -5,13 +5,11 @@ import { clientOf, published } from './cases.ts';
 import { clients } from './clients.ts';
 import { en } from './en.ts';
 import { es } from './es.ts';
-import { faqItems, invoicing, mailto, SITE } from './site.ts';
+import { book, faqItems, invoicing, SITE } from './site.ts';
 
-test('the contact link survives accents, line breaks and ampersands', () => {
-  const url = new URL(mailto('¿Proyecto? Sí & más', 'Hola\n\nO&L'));
-  assert.equal(url.pathname, SITE.email);
-  assert.equal(url.searchParams.get('subject'), '¿Proyecto? Sí & más');
-  assert.equal(url.searchParams.get('body'), 'Hola\n\nO&L');
+test('every book-a-call link goes to the agenda in the right language, with its origin', () => {
+  assert.equal(book('es', 'hero'), 'https://agenda.chambasimple.com?from=hero');
+  assert.equal(book('en', 'case-ol'), 'https://agenda.chambasimple.com/en?from=case-ol');
 });
 
 test('the invoice question appears only when the company can issue invoices', () => {

@@ -17,8 +17,6 @@ export const en: Content = {
   },
   cta: {
     primary: 'Book a call',
-    mailSubject: "Let's talk about a project",
-    mailBody: "Hi, we're [company]. We'd like help with: ",
   },
   hero: {
     title: 'Custom software, built around how your business works',
@@ -153,8 +151,6 @@ export const en: Content = {
       ],
     },
     cta: 'Tell us your idea',
-    mailSubject: 'I have an idea for AI',
-    mailBody: 'Hi, my idea is: ',
   },
   why: {
     title: 'Why work with us',
@@ -236,8 +232,8 @@ export const en: Content = {
   },
   contact: {
     title: 'What do you want to fix?',
-    body: "Email us what your team still does by hand. We'll reply to set up a free 30-minute call.",
-    email: 'Email us at',
+    body: 'Pick a time for a free 30-minute call on Google Meet. Tell us what your team still does by hand and we will see if we can help.',
+    email: 'Prefer email? Write to',
   },
   notFound: {
     title: 'Page not found',

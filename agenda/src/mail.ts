@@ -17,6 +17,7 @@ export type Booked = {
   need: string;
   lang: 'es' | 'en';
   timeZone: string;
+  from?: string;
 };
 
 const ORGANIZER = 'hola@chambasimple.com';
@@ -112,7 +113,7 @@ export function ownersEmail(b: Booked, m: Mail) {
     `${b.name} · ${b.company} · ${b.email}`,
     `${when}`,
     `Meet: ${b.meet}`,
-    `Idioma: ${b.lang} · Zona del visitante: ${b.timeZone}`,
+    `Idioma: ${b.lang} · Zona del visitante: ${b.timeZone} · Origen: ${b.from || 'directo'}`,
     '',
     b.need,
   ].join('\n');

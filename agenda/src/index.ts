@@ -33,6 +33,9 @@ const EMAIL = 'hola@chambasimple.com';
 const SITE = 'https://chambasimple.com';
 const PER_EMAIL = 2; // bookings per email per 7 days
 
+// The site button a visitor came from (?from=hero): short, lowercase, or nothing.
+const buttonFrom = (v: string | null) => (v && /^[a-z0-9-]{1,30}$/.test(v) ? v : '');
+
 const google = (env: Env): Google | null =>
   env.GOOGLE_CLIENT_ID &&
   env.GOOGLE_CLIENT_SECRET &&
@@ -118,7 +121,13 @@ async function turnstileOk(env: Env, token: string, ip: string) {
   return ((await res.json()) as { success: boolean }).success;
 }
 
-type Extra = { error?: string; invalid?: string[]; values?: Values; chosen?: number };
+type Extra = {
+  error?: string;
+  invalid?: string[];
+  values?: Values;
+  chosen?: number;
+  from?: string;
+};
 type Ctx = {
   request: Request;
   env: Env;
@@ -148,11 +157,11 @@ async function guard({ request, env, t, page }: Ctx): Promise<Response | null> {
 
 // Create the event, then the emails. The booking stands even if an email fails: the confirmation
 // page already shows the Meet link.
-async function confirm({ env, now, g, timeZone }: Ctx, booking: Booking) {
+async function confirm({ env, now, g, timeZone }: Ctx, booking: Booking, from: string) {
   const m = mail(env);
   const event = await book(g, await accessToken(g), booking, fetch, Boolean(m));
   if (m) {
-    const booked = { ...booking, id: event.id, meet: event.meet, timeZone };
+    const booked = { ...booking, id: event.id, meet: event.meet, timeZone, from };
     await Promise.allSettled([
       send(m, visitorEmail(booked, m, now)),
       ...(m.notify.length ? [send(m, ownersEmail(booked, m))] : []),
@@ -166,9 +175,10 @@ async function submit(ctx: Ctx): Promise<Response> {
   const blocked = await guard(ctx);
   if (blocked) return blocked;
   const form = await request.formData();
+  const from = buttonFrom(String(form.get('from') ?? ''));
   const ip = request.headers.get('cf-connecting-ip') ?? 'unknown';
   if (!(await turnstileOk(env, String(form.get('cf-turnstile-response') ?? ''), ip)))
-    return page(400, { error: t.errors.trap });
+    return page(400, { error: t.errors.trap, from });
 
   const offered = freeSlots(now, await busyBlocks(g, env, now, true));
   const read = await readForm(form, env.FORM_SECRET as string, now, offered);
@@ -178,24 +188,25 @@ async function submit(ctx: Ctx): Promise<Response> {
   if ('error' in read) {
     const slotGone = Boolean(read.fields?.includes('slot') && form.get('slot'));
     const error = slotGone ? t.errors.slot : t.errors[read.error];
-    return page(slotGone ? 409 : 400, { error, invalid: read.fields, values });
+    return page(slotGone ? 409 : 400, { error, invalid: read.fields, values, from });
   }
   const key = await emailKey(read.email);
   const count = Number((await env.KV.get(key)) ?? 0);
-  if (count >= PER_EMAIL) return page(429, { error: t.errors.limit, values });
+  if (count >= PER_EMAIL) return page(429, { error: t.errors.limit, values, from });
   // ponytail: KV is eventually consistent, so this lock is best effort; the fresh freeBusy above
   // (which includes the agenda calendar) catches nearly every double booking. Durable Objects if not.
-  if (await env.KV.get(`lock:${read.start}`)) return page(409, { error: t.errors.slot, values });
+  if (await env.KV.get(`lock:${read.start}`))
+    return page(409, { error: t.errors.slot, values, from });
   await env.KV.put(`lock:${read.start}`, '1', { expirationTtl: 60 });
 
   try {
-    const event = await confirm(ctx, { ...read, minutes: HOURS.minutes, lang });
+    const event = await confirm(ctx, { ...read, minutes: HOURS.minutes, lang }, from);
     await env.KV.put(key, String(count + 1), { expirationTtl: 7 * 86_400 });
     await env.KV.delete('busy');
     const home = lang === 'es' ? SITE : `${SITE}/en`;
     return html(donePage(t, read.start, timeZone, event.meet, home), 200, env);
   } catch {
-    return page(502, { error: t.errors.google, values, chosen: read.start });
+    return page(502, { error: t.errors.google, values, chosen: read.start, from });
   }
 }
 
@@ -230,7 +241,7 @@ async function handle(request: Request, env: Env, now: number): Promise<Response
       env,
     );
   return request.method === 'GET'
-    ? page(200)
+    ? page(200, { from: buttonFrom(url.searchParams.get('from')) })
     : submit({ request, env, now, g, t, lang, timeZone, page });
 }
 

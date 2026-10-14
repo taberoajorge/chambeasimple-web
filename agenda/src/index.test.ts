@@ -196,3 +196,18 @@ test('if Resend fails, the booking still stands', async () => {
   assert.equal(res.status, 200);
   assert.equal(created.length, 1);
 });
+
+test('the site button a visitor came from reaches the owners, sanitized', async () => {
+  const page = await (
+    await handle(new Request('https://agenda.chambasimple.com/?from=hero'), env(), NOW)
+  ).text();
+  assert.match(page, /name="from" value="hero"/);
+  const bad = await (
+    await handle(new Request('https://agenda.chambasimple.com/?from=<x>'), env(), NOW)
+  ).text();
+  assert.match(bad, /name="from" value=""/);
+  await post(env({ RESEND_API_KEY: 're_test', NOTIFY: 'agenda@chambasimple.com' }), {
+    from: 'contact',
+  });
+  assert.match((mails[1] as unknown as { text: string }).text, /Origen: contact/);
+});

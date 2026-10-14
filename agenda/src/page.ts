@@ -54,6 +54,7 @@ export type BookingPage = {
   values?: Values;
   chosen?: number;
   turnstile?: string;
+  from?: string; // which site button brought the visitor
 };
 
 // "hora estándar central (GMT-6)": a readable zone name plus its offset, so it is never ambiguous.
@@ -120,6 +121,7 @@ ${field('email', t.email, 'email', 'maxlength="254" autocomplete="email"')}
 <label class="field" for="need">${esc(t.need)}</label><textarea id="need" name="need" required maxlength="500" aria-describedby="need-hint"${bad('need')}>${v('need')}</textarea><p class="hint" id="need-hint">${esc(t.needHint)}</p>
 <div class="trap" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
 <input type="hidden" name="stamp" value="${esc(p.stamp)}">
+<input type="hidden" name="from" value="${esc(p.from ?? '')}">
 ${p.turnstile ? `<div class="cf-turnstile" data-sitekey="${esc(p.turnstile)}" data-language="${t.lang === 'en' ? 'en' : 'es'}"></div>` : ''}
 <p class="hint">${esc(t.privacy)} <a href="${esc(p.privacy)}">${esc(t.privacyLink)}</a></p>
 <button type="submit">${esc(t.submit)}</button>
