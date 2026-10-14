@@ -18,10 +18,16 @@ const kv = () => {
 };
 
 let created: unknown[] = [];
+let googleUrls: string[] = [];
+let mails: { to: string[] }[] = [];
+let resendOk = true;
 let tokenOk = true;
 const realFetch = globalThis.fetch;
 beforeEach(() => {
   created = [];
+  googleUrls = [];
+  mails = [];
+  resendOk = true;
   tokenOk = true;
   globalThis.fetch = (async (input: string | URL, init?: RequestInit) => {
     const url = String(input);
@@ -31,7 +37,12 @@ beforeEach(() => {
       return new Response(
         JSON.stringify({ calendars: { 'alex@x.pe': { busy: [] }, 'sandra@x.pe': { busy: [] } } }),
       );
+    if (url.includes('api.resend.com')) {
+      mails.push(JSON.parse(String(init?.body)));
+      return new Response('{}', { status: resendOk ? 200 : 500 });
+    }
     if (url.includes('/events')) {
+      googleUrls.push(url);
       created.push(JSON.parse(String(init?.body)));
       return new Response(JSON.stringify({ id: 'e', hangoutLink: 'https://meet.google.com/abc' }));
     }
@@ -162,4 +173,26 @@ test('a privacy browser sending Origin: null can still book; a cross-site post c
   assert.equal((await post(env(), {}, { origin: 'null' })).status, 200);
   const crossSite = { 'sec-fetch-site': 'cross-site' };
   assert.equal((await post(env(), { slot: String(SLOT + 30 * 60_000) }, crossSite)).status, 403);
+});
+
+test('with Resend, Google stays silent and the agenda sends both emails itself', async () => {
+  const res = await post(env({ RESEND_API_KEY: 're_test', NOTIFY: 'agenda@chambasimple.com' }));
+  assert.equal(res.status, 200);
+  assert.match(googleUrls[0], /sendUpdates=none/);
+  assert.equal(
+    (created[0] as { attendees?: unknown }).attendees,
+    undefined,
+    'no Google attendees, so no Google email',
+  );
+  assert.deepEqual(
+    mails.map((m) => m.to),
+    [['ana@acme.pe'], ['agenda@chambasimple.com']],
+  );
+});
+
+test('if Resend fails, the booking still stands', async () => {
+  resendOk = false;
+  const res = await post(env({ RESEND_API_KEY: 're_test' }));
+  assert.equal(res.status, 200);
+  assert.equal(created.length, 1);
 });

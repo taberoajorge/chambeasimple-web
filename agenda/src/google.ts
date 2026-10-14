@@ -62,12 +62,19 @@ export type Booking = {
   lang: 'es' | 'en';
 };
 
-export async function book(g: Google, token: string, b: Booking, get: Fetch = fetch) {
+// quiet: Google creates the event and Meet link but emails no one (the agenda sends its own mail).
+export async function book(
+  g: Google,
+  token: string,
+  b: Booking,
+  get: Fetch = fetch,
+  quiet = false,
+) {
   const url = new URL(
     `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(g.agendaCalendar)}/events`,
   );
   url.searchParams.set('conferenceDataVersion', '1');
-  url.searchParams.set('sendUpdates', 'all');
+  url.searchParams.set('sendUpdates', quiet ? 'none' : 'all');
   const title = `Chambea Simple × ${b.company}`;
   const res = await get(url, {
     method: 'POST',
@@ -77,7 +84,12 @@ export async function book(g: Google, token: string, b: Booking, get: Fetch = fe
       description: `${b.name} · ${b.company}\n\n${b.need}`,
       start: { dateTime: new Date(b.start).toISOString() },
       end: { dateTime: new Date(b.start + b.minutes * 60_000).toISOString() },
-      attendees: [...g.notify.map((email) => ({ email })), { email: b.email, displayName: b.name }],
+      ...(!quiet && {
+        attendees: [
+          ...g.notify.map((email) => ({ email })),
+          { email: b.email, displayName: b.name },
+        ],
+      }),
       conferenceData: {
         createRequest: {
           requestId: crypto.randomUUID(),

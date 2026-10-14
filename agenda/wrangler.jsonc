@@ -19,13 +19,13 @@
     // TURNSTILE_SECRET.
     "TURNSTILE_SITE_KEY": "0x4AAAAAAFW5Q1ffISVM0M9j",
     // Availability comes only from the hola@ account's own calendar: the owners block their time
-    // there. hola@ organizes the events, and Google never emails an event's own organizer, so the
-    // owners are told through NOTIFY: another SimpleLogin alias that forwards to both mailboxes.
+    // there. Emails go out through Resend, signed as chambasimple.com (agenda/src/mail.ts); the
+    // owners' notice goes to NOTIFY, a SimpleLogin alias that forwards to both mailboxes.
     "PEOPLE": "hola@chambasimple.com",
     "NOTIFY": "agenda@chambasimple.com"
   },
   // Secrets (wrangler secret put, never in the repo): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
   // GOOGLE_REFRESH_TOKEN (of hola@chambasimple.com), AGENDA_CALENDAR (the app's own calendar id),
-  // FORM_SECRET, TURNSTILE_SECRET.
+  // FORM_SECRET, TURNSTILE_SECRET, RESEND_API_KEY (send-only, restricted to chambasimple.com).
   "observability": { "enabled": true }
 }

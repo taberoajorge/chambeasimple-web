@@ -26,6 +26,16 @@ const es = {
     meet: 'Abrir el enlace de Meet',
     back: 'Volver a chambasimple.com',
   },
+  mail: {
+    subject: (when: string) => `Tu conversación con Chambea Simple: ${when}`,
+    hello: (name: string) => `Hola, ${name}:`,
+    body: (when: string) =>
+      `Quedó agendada nuestra conversación de 30 minutos el ${when}. Adjuntamos la invitación para tu calendario.`,
+    meet: 'Enlace de Google Meet',
+    change: 'Si necesitas cambiar la hora, responde a este correo y lo coordinamos.',
+    signature: 'Sandra y Alex · Chambea Simple',
+    owners: (company: string) => `Nueva conversación agendada: ${company}`,
+  },
   errors: {
     fields: 'Revisa los campos marcados.',
     slot: 'Ese horario ya no está libre. Elige otro.',
@@ -62,6 +72,16 @@ const en: typeof es = {
       `See you on ${when}. A Google Calendar invite with the Meet link is in your inbox.`,
     meet: 'Open the Meet link',
     back: 'Back to chambasimple.com',
+  },
+  mail: {
+    subject: (when: string) => `Your call with Chambea Simple: ${when}`,
+    hello: (name: string) => `Hi ${name},`,
+    body: (when: string) =>
+      `Our 30-minute call is booked for ${when}. The calendar invitation is attached.`,
+    meet: 'Google Meet link',
+    change: 'If you need another time, just reply to this email and we will sort it out.',
+    signature: 'Sandra and Alex · Chambea Simple',
+    owners: (company: string) => `New call booked: ${company}`,
   },
   errors: {
     fields: 'Please check the highlighted fields.',

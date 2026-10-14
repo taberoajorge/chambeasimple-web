@@ -3,7 +3,8 @@
 // names or emails. Nothing personal is logged.
 import { AGENDA, type AgendaText } from '../../src/content/agenda.ts';
 import { emailKey, LIMITS, readForm, stamp } from './form.ts';
-import { accessToken, book, busy, type Google } from './google.ts';
+import { accessToken, type Booking, book, busy, type Google } from './google.ts';
+import { type Mail, ownersEmail, send, visitorEmail } from './mail.ts';
 import { bookingPage, closedPage, donePage, type Values } from './page.ts';
 import { freeSlots, HOURS, type Interval } from './slots.ts';
 
@@ -25,6 +26,7 @@ export type Env = {
   FORM_SECRET?: string;
   TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET?: string;
+  RESEND_API_KEY?: string; // when set, the agenda sends its own signed emails (mail.ts)
 };
 
 const EMAIL = 'hola@chambasimple.com';
@@ -44,6 +46,19 @@ const google = (env: Env): Google | null =>
         refreshToken: env.GOOGLE_REFRESH_TOKEN,
         agendaCalendar: env.AGENDA_CALENDAR,
         people: env.PEOPLE.split(',').map((p) => p.trim()),
+        notify: (env.NOTIFY ?? '')
+          .split(',')
+          .map((p) => p.trim())
+          .filter(Boolean),
+      }
+    : null;
+
+const mail = (env: Env): Mail | null =>
+  env.RESEND_API_KEY
+    ? {
+        apiKey: env.RESEND_API_KEY,
+        from: 'Chambea Simple <agenda@chambasimple.com>',
+        replyTo: EMAIL,
         notify: (env.NOTIFY ?? '')
           .split(',')
           .map((p) => p.trim())
@@ -131,6 +146,21 @@ async function guard({ request, env, t, page }: Ctx): Promise<Response | null> {
   return null;
 }
 
+// Create the event, then the emails. The booking stands even if an email fails: the confirmation
+// page already shows the Meet link.
+async function confirm({ env, now, g, timeZone }: Ctx, booking: Booking) {
+  const m = mail(env);
+  const event = await book(g, await accessToken(g), booking, fetch, Boolean(m));
+  if (m) {
+    const booked = { ...booking, id: event.id, meet: event.meet, timeZone };
+    await Promise.allSettled([
+      send(m, visitorEmail(booked, m, now)),
+      ...(m.notify.length ? [send(m, ownersEmail(booked, m))] : []),
+    ]);
+  }
+  return event;
+}
+
 async function submit(ctx: Ctx): Promise<Response> {
   const { request, env, now, g, t, lang, timeZone, page } = ctx;
   const blocked = await guard(ctx);
@@ -159,7 +189,7 @@ async function submit(ctx: Ctx): Promise<Response> {
   await env.KV.put(`lock:${read.start}`, '1', { expirationTtl: 60 });
 
   try {
-    const event = await book(g, await accessToken(g), { ...read, minutes: HOURS.minutes, lang });
+    const event = await confirm(ctx, { ...read, minutes: HOURS.minutes, lang });
     await env.KV.put(key, String(count + 1), { expirationTtl: 7 * 86_400 });
     await env.KV.delete('busy');
     const home = lang === 'es' ? SITE : `${SITE}/en`;
