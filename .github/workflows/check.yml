@@ -94,11 +94,16 @@ jobs:
       - name: Upload a preview version
         id: upload
         run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::notice::No CLOUDFLARE_API_TOKEN secret yet: no preview for this PR."
+            exit 0
+          fi
           pnpm exec wrangler versions upload --preview-alias "pr-$PR" --message "PR #$PR" | tee "$RUNNER_TEMP/upload.log"
           url=$(grep -oE "https://pr-$PR-[a-z0-9.-]+\.workers\.dev" "$RUNNER_TEMP/upload.log" | head -1)
           test -n "$url"
           echo "url=$url" >> "$GITHUB_OUTPUT"
       - name: Smoke and Lighthouse on the preview
+        if: steps.upload.outputs.url != ''
         env:
           URL: ${{ steps.upload.outputs.url }}
         run: |
