@@ -166,7 +166,7 @@ const contact = mailto(t.cta.mailSubject, t.cta.mailBody);
 <Section id={t.ai.id} title={t.ai.title} intro={t.ai.intro} tone="surface">
   <p class="mt-6 max-w-2xl border-l-4 border-mint pl-5">
     <strong class="block text-2xl font-extrabold">{t.ai.fact}</strong>
-    <a href={t.ai.source.url} rel="noopener" class="text-sm text-muted underline underline-offset-4">{t.ai.source.label}</a>
+    <a href={t.ai.source.url} rel="noopener" class="inline-flex min-h-11 items-center text-sm text-muted underline underline-offset-4">{t.ai.source.label}</a>
   </p>
   <CardGrid cols={2}>
     {

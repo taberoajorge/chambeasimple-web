@@ -219,8 +219,8 @@ export const en: Content = {
         a: 'Time for the sessions, real examples of your work and one person on your team to review each delivery.',
       },
       {
-        q: 'Do you work remotely?',
-        a: 'Yes. We work remotely, in Spanish and English.',
+        q: 'Do you work remotely or on site?',
+        a: 'The whole project can be done remotely, in Spanish or English. For mid-size and larger projects we can also hold sessions on site in Peru or Mexico, for example the initial discovery or training your team.',
       },
     ],
     invoice: {

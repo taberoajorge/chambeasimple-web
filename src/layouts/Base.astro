@@ -98,10 +98,11 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
                 .join(' · ')
             : t.footer.inFormation}
         </p>
-        <p class="flex flex-wrap gap-x-4">
-          <a href={`mailto:${SITE.email}`} class="underline">{SITE.email}</a>
-          <a href={PATHS[lang].privacy} class="underline">{t.privacy.link}</a>
-          <a href={markdown} class="underline">{t.footer.markdown}</a>
+        <!-- Each link is a 44 px target: on narrow screens these wrap, and small targets end up stacked. -->
+        <p class="flex flex-wrap gap-x-6">
+          <a href={`mailto:${SITE.email}`} class="inline-flex min-h-11 items-center underline">{SITE.email}</a>
+          <a href={PATHS[lang].privacy} class="inline-flex min-h-11 items-center underline">{t.privacy.link}</a>
+          <a href={markdown} class="inline-flex min-h-11 items-center underline">{t.footer.markdown}</a>
         </p>
       </div>
     </footer>

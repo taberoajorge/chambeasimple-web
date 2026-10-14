@@ -219,8 +219,8 @@ export const es = {
         a: 'Tiempo para las sesiones, ejemplos reales de tu trabajo y una persona de tu equipo que valide cada entrega.',
       },
       {
-        q: '¿Trabajan en remoto?',
-        a: 'Sí. Trabajamos en remoto, en español y en inglés.',
+        q: '¿Trabajan en remoto o presencial?',
+        a: 'Todo el proyecto puede hacerse en remoto, en español o en inglés. Si el proyecto es mediano o grande, también podemos hacer sesiones presenciales en el Perú o en México, por ejemplo el entendimiento inicial o la capacitación del equipo.',
       },
     ],
     invoice: {
