@@ -107,7 +107,13 @@ export default {
       return Response.redirect(url.href, 308);
     }
     const response = await respond(request, env, url);
-    if (request.method === 'GET')
+    // Only the real domain counts: PR previews share this dataset. Our own checks (Lighthouse and
+    // smoke in CI) mark themselves with x-chambea-check, since Lighthouse's user agent looks human.
+    if (
+      request.method === 'GET' &&
+      url.hostname === DOMAIN &&
+      !request.headers.has('x-chambea-check')
+    )
       env.VISITS?.writeDataPoint(pointOf(request, url, response.status));
     return response;
   },
