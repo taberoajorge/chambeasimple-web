@@ -2,6 +2,8 @@
 # Blocks rewriting main and runs the full check and build before anything leaves this machine.
 set -eu
 cd "$(git rev-parse --show-toplevel)"
+# Git exports GIT_DIR and friends to hooks; the tests build throwaway repos that must not inherit them.
+unset $(env | sed -n 's/^\(GIT_[A-Za-z_]*\)=.*/\1/p')
 want=$(cut -d. -f1 .node-version)
 have=$(node -p 'process.versions.node.split(".")[0]')
 if [ "$have" != "$want" ]; then

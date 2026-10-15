@@ -1,0 +1,12 @@
+---
+// Bento Grid layout: asymmetric grid with items of different sizes.
+// Use BentoGridItem with span prop to control column spanning.
+// Grid is responsive: full width mobile, auto-fit desktop.
+---
+
+<div
+  class="grid gap-4 md:gap-6 auto-rows-max"
+  style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))"
+>
+  <slot />
+</div>

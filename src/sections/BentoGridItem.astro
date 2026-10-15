@@ -1,0 +1,24 @@
+---
+// Bento Grid Item: individual grid cell with optional column spanning.
+// Inherits Card styling (border, rounded, padding).
+// Props: span (1 or 2) for column spanning on desktop.
+
+interface Props {
+  span?: 1 | 2;
+}
+
+const { span = 1 } = Astro.props;
+---
+
+<div
+  class:list={[
+    // Card base styling: border, rounded, padding
+    'rounded-2xl border border-line bg-card p-6 md:p-8',
+    // Hover states: border accent, subtle shadow
+    'hover:border-accent transition-colors hover:shadow-lg',
+    // Column spanning on desktop (md:)
+    span === 2 && 'md:col-span-2',
+  ]}
+>
+  <slot />
+</div>
