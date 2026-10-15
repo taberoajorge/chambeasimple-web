@@ -106,7 +106,7 @@ const ourClients = clients(import.meta.env.DEV);
               <ul class="mt-4 space-y-1">
                 {proof.map((c) => (
                   <li>
-                    <a href={PATHS[lang].case(c[lang].slug)} class="text-sm font-semibold text-accent underline underline-offset-4">
+                    <a href={PATHS[lang].case(c[lang].slug)} class="inline-flex min-h-11 items-center text-sm font-semibold text-accent underline underline-offset-4">
                       {t.solutions.seeCase}: {c[lang].title}
                     </a>
                   </li>
@@ -128,7 +128,7 @@ const ourClients = clients(import.meta.env.DEV);
         <li class="timeline-step relative" data-scroll>
           <div class="flex gap-4 md:gap-0">
             {/* Hidden on desktop (pseudo-element shows circle) */}
-            <span aria-hidden="true" class="flex md:hidden size-8 shrink-0 items-center justify-center rounded-full bg-accent font-bold text-ink">
+            <span aria-hidden="true" class="flex md:hidden size-8 shrink-0 items-center justify-center rounded-full bg-accent font-bold text-accent-ink">
               {i + 1}
             </span>
             <div>

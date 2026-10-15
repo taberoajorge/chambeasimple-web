@@ -60,10 +60,10 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
           chambea<span class="text-accent">simple</span>
         </a>
         <nav aria-label={t.nav.label} class="flex items-center gap-1 md:gap-6">
-          <ul class="hidden items-center gap-6 md:flex">
+          <ul class="hidden items-center gap-6 lg:flex">
             {[t.solutions, t.process, t.cases].map((s) => (
   <li>
-    <a href={`${PATHS[lang].home}#${s.id}`} class="text-muted hover:text-text">
+    <a href={`${PATHS[lang].home}#${s.id}`} class="inline-flex min-h-11 items-center text-muted hover:text-text">
       {s.title}
     </a>
   </li>
@@ -78,7 +78,7 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
             id="theme"
             type="button"
             aria-pressed="false"
-            class="min-h-11 min-w-11 items-center justify-center rounded-full text-text hover:text-accent"
+            class="min-h-11 min-w-11 shrink-0 items-center justify-center rounded-full text-text hover:text-accent"
           >
             <span class="sr-only">{t.nav.theme}</span>
             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -91,7 +91,7 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
             href={paths[other]}
             hreflang={other}
             lang={other}
-            class="flex min-h-11 w-11 items-center justify-center text-sm font-semibold"
+            class="flex min-h-11 w-11 shrink-0 items-center justify-center text-sm font-semibold"
           >
             <span aria-hidden="true">{other.toUpperCase()}</span>
             <span class="sr-only">{t.nav.switchTo.label}</span>
