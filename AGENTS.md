@@ -10,18 +10,24 @@ free plan, at https://chambasimple.com.
 - Prepare a checkout or worktree: `sh scripts/bootstrap.sh` (Node from `.node-version`, Corepack).
   Orca runs it on its own (`orca.yaml`); outside Orca see `docs/worktrees.md`.
 - `corepack pnpm dev` / `pnpm preview`: this checkout's own port (`node scripts/port.ts` prints it).
-  `dev` also shows cases that are not approved yet; `build` leaves them out.
+  `dev` is Astro and also shows cases that are not approved yet; `preview` serves the build behind
+  the Worker (`wrangler dev`), with the CSP and headers Cloudflare sends.
 - `pnpm check`: Biome, types, tests, import boundaries, dead code (Knip) and OpenSpec. Run it before
   saying work is done; it writes the check certificate the agent hooks look for.
+- `pnpm build`: the site, then `scripts/checks/seo.ts` on every page (SEO, and no script the
+  Worker's CSP would block).
 - `pnpm build`, then `pnpm preview` and `pnpm perf`: Lighthouse (four categories, mobile and
-  desktop, every page in the sitemap) and load budgets. A green run writes the perf certificate.
+  desktop, every page in the sitemap) and load budgets. It refuses a server without the Worker's
+  CSP. A green run writes the perf certificate. `--url <base>` and `--path /en` narrow it.
 - `pnpm parity save|compare`: snapshot of head, text and JSON-LD of `/` and `/en`.
-- `pnpm preview:worker`: the build on the real Cloudflare runtime (`wrangler dev`, port 8787).
-  `node scripts/checks/smoke.ts <url>` checks a deployed site in seconds.
-- Pipeline (`.github/workflows/`): every PR runs the checks, Lighthouse, and gets its own Cloudflare
-  preview URL with smoke and Lighthouse results in a comment; `main` deploys only after the checks,
-  smoke-tests production and rolls back on failure; `monitor.yml` smoke-tests production daily and
-  runs Lighthouse on Mondays, opening an issue when something breaks.
+- `node scripts/checks/smoke.ts <url>`: checks a deployed site in seconds.
+- Pipeline (`.github/workflows/`): every PR runs `check`, then gets its own Cloudflare preview URL,
+  smoke-tested and audited by Lighthouse one job per page in parallel; the `lighthouse` job gathers
+  them, comments the results on the PR and fails unless every page passed. `main` requires `check`
+  and `lighthouse`. On `main`, the deploy waits only for `check`, smoke-tests production and rolls
+  back on failure, then Lighthouse runs on production in its own job; `monitor.yml` smoke-tests
+  production daily and runs Lighthouse on Mondays, opening an issue when something breaks.
+  Dependabot PRs need the Cloudflare secrets as Dependabot secrets to get a preview.
 - Pushes run `pnpm check` and `pnpm build` under the pinned Node: `fnm use` first.
 
 ## Map

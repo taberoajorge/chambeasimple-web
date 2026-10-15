@@ -6,7 +6,8 @@ description: Check a visual or content change on the Chambea Simple site before 
 # Verify the UI
 
 Work against the production build: `pnpm build && pnpm preview` (the URL is printed; the main
-checkout uses its own port, `node scripts/port.ts`). Dev mode shows unpublished cases and is slower.
+checkout uses its own port, `node scripts/port.ts`). `preview` runs the Worker, so the CSP and
+headers are the real ones. Dev mode shows unpublished cases, has no CSP and is slower.
 
 ## With the Chrome DevTools MCP (every visual change)
 

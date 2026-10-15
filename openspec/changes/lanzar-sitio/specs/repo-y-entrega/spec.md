@@ -52,7 +52,7 @@ El script de hooks común SHALL tener, además de las guardas del portafolio, un
 
 #### Scenario: Una regresión no pasa
 - **WHEN** un PR baja la accesibilidad, el SEO o las buenas prácticas por debajo de 100, o el rendimiento por debajo del umbral de CI
-- **THEN** el check `perf` falla en el PR y nombra la auditoría
+- **THEN** el check `lighthouse` falla en el PR y nombra la auditoría
 
 ### Requirement: Despliegue continuo en Cloudflare
 El repo `taberoajorge/chambeasimple-web` SHALL desplegarse como un Cloudflare Worker con recursos estáticos, en el plan gratis y sin método de pago, para que pasar los límites devuelva errores y nunca cargos. El pipeline (`.github/workflows/`) MUST:

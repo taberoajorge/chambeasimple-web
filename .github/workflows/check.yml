@@ -1,5 +1,8 @@
 name: check
 
+# PR: `check`, then a Cloudflare preview audited page by page in parallel; `lighthouse` gathers it.
+# main requires `check` and `lighthouse`. main: deploy after `check` (the same tree already passed
+# Lighthouse on its PR preview), smoke test, roll back on failure, then Lighthouse on production.
 on:
   pull_request:
   push:
@@ -21,10 +24,13 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      # pnpm on the PATH before setup-node, so it can cache the pnpm store; the version comes from
+      # packageManager in package.json.
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .node-version
-      - run: corepack enable
+          cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
       - run: pnpm build
@@ -49,84 +55,138 @@ jobs:
           tar -xzf "$RUNNER_TEMP/gitleaks.tgz" -C "$RUNNER_TEMP" gitleaks
           "$RUNNER_TEMP/gitleaks" git --redact --no-banner .
 
-  perf:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: .node-version
-      - run: corepack enable
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - name: Lighthouse and budgets
-        run: |
-          pnpm preview > "$RUNNER_TEMP/server.log" 2>&1 &
-          for _ in $(seq 1 60); do curl -sf -o /dev/null "http://localhost:$(node scripts/port.ts)/" && break; sleep 1; done
-          pnpm perf --ci
-
-  # Every PR from this repo gets its own Cloudflare preview URL, audited like production.
+  # Every PR gets its own Cloudflare preview URL, on the real Worker runtime. After `check`, so
+  # nothing reaches a public URL before gitleaks has run.
   preview:
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event_name == 'pull_request'
     needs: check
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    permissions:
-      contents: read
-      pull-requests: write
+    timeout-minutes: 10
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       PR: ${{ github.event.number }}
+    outputs:
+      url: ${{ steps.upload.outputs.url }}
+      pages: ${{ steps.upload.outputs.pages }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .node-version
-      - run: corepack enable
+          cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - name: Upload a preview version
         id: upload
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "::notice::No CLOUDFLARE_API_TOKEN secret yet: no preview for this PR."
-            exit 0
+            echo "::error::No CLOUDFLARE_API_TOKEN: Dependabot and fork PRs do not see Actions secrets. Without a preview there is no Lighthouse, and lighthouse is required. Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID as Dependabot secrets."
+            exit 1
           fi
           pnpm exec wrangler versions upload --preview-alias "pr-$PR" --message "PR #$PR" | tee "$RUNNER_TEMP/upload.log"
           url=$(grep -oE "https://pr-$PR-[a-z0-9.-]+\.workers\.dev" "$RUNNER_TEMP/upload.log" | head -1)
           test -n "$url"
           echo "url=$url" >> "$GITHUB_OUTPUT"
-      - name: Smoke and Lighthouse on the preview
-        if: steps.upload.outputs.url != ''
+          # The pages to audit, one job each: every path in the sitemap.
+          echo "pages=$(node -p 'JSON.stringify([...require("fs").readFileSync("dist/sitemap-0.xml", "utf8").matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, loc]) => new URL(loc).pathname))')" >> "$GITHUB_OUTPUT"
+      - name: Smoke test the preview
         shell: bash # -eo pipefail: a failure before | tee still fails the step
         env:
           URL: ${{ steps.upload.outputs.url }}
         run: |
-          node scripts/checks/smoke.ts "$URL" | tee "$RUNNER_TEMP/report.txt"
-          pnpm perf --ci --url "$URL" 2>&1 | tee -a "$RUNNER_TEMP/report.txt"
-      - name: Comment the preview on the PR
+          mkdir -p "$RUNNER_TEMP/report"
+          node scripts/checks/smoke.ts "$URL" | tee "$RUNNER_TEMP/report/smoke.txt"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always() && steps.upload.outputs.url != ''
+        with:
+          name: lighthouse-smoke
+          path: ${{ runner.temp }}/report/smoke.txt
+          retention-days: 7
+
+  # One job per page, in parallel: the same Lighthouse as `pnpm perf`, against the preview.
+  audit:
+    name: audit ${{ matrix.path }}
+    needs: preview
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        path: ${{ fromJSON(needs.preview.outputs.pages) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Lighthouse
+        shell: bash
+        env:
+          URL: ${{ needs.preview.outputs.url }}
+          PAGE: ${{ matrix.path }}
+          INDEX: ${{ strategy.job-index }}
+        run: |
+          # Named by sitemap order, so the PR comment lists the pages in that order.
+          mkdir -p "$RUNNER_TEMP/report"
+          pnpm perf --ci --url "$URL" --path "$PAGE" 2>&1 | tee "$RUNNER_TEMP/report/$(printf %03d "$INDEX").txt"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: lighthouse-${{ strategy.job-index }}
+          path: ${{ runner.temp }}/report/
+          retention-days: 7
+
+  # The one required Lighthouse check. A skipped job counts as passed for a required check, so this
+  # job always runs on PRs and fails unless the preview and every page passed.
+  lighthouse:
+    if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+    needs: [preview, audit]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        continue-on-error: true # no artifacts when the preview never came up
+        with:
+          pattern: lighthouse-*
+          merge-multiple: true
+          path: report
+      - name: Comment the preview on the PR
+        if: needs.preview.outputs.url != ''
         env:
           GH_TOKEN: ${{ github.token }}
-          URL: ${{ steps.upload.outputs.url }}
+          URL: ${{ needs.preview.outputs.url }}
+          PR: ${{ github.event.number }}
         run: |
-          { echo "**Preview:** $URL"; echo; echo '```'; cat "$RUNNER_TEMP/report.txt" 2>/dev/null; echo '```'; } > "$RUNNER_TEMP/body.md"
-          cat "$RUNNER_TEMP/body.md" >> "$GITHUB_STEP_SUMMARY"
-          gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --edit-last --body-file "$RUNNER_TEMP/body.md" \
-            || gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/body.md"
+          { echo "**Preview:** $URL"; echo; echo '```'; cat report/smoke.txt report/[0-9]*.txt 2>/dev/null; echo '```'; } > body.md
+          cat body.md >> "$GITHUB_STEP_SUMMARY"
+          gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --edit-last --body-file body.md \
+            || gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file body.md
+      - name: The preview and every page passed
+        if: always()
+        env:
+          PREVIEW: ${{ needs.preview.result }}
+          AUDIT: ${{ needs.audit.result }}
+        run: |
+          echo "preview: $PREVIEW · audit: $AUDIT"
+          test "$PREVIEW" = success && test "$AUDIT" = success
 
-  # main deploys only after every check passed; a failing smoke test rolls the deploy back.
+  # main deploys after `check`; a failing smoke test rolls the deploy back.
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [check, perf]
+    needs: check
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 10
     environment: production
     concurrency:
       group: deploy-production
@@ -139,10 +199,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .node-version
-      - run: corepack enable
+          cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - name: Deploy
@@ -158,7 +219,29 @@ jobs:
       - name: Roll back
         if: failure() && steps.deploy.outcome == 'success'
         run: pnpm exec wrangler rollback --message "smoke test failed on $GITHUB_SHA" --yes
+
+  # Its own job: it never holds the deploy lock and cannot trigger the rollback. Red here means
+  # something only production has changed, since the same tree passed on its PR preview.
+  production:
+    needs: deploy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      SITE_URL: ${{ vars.SITE_URL }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Lighthouse on production
         shell: bash
+        run: pnpm perf --ci --url "$SITE_URL" 2>&1 | tee "$RUNNER_TEMP/report.txt"
+      - name: Keep the result
+        if: always()
         run: |
-          { echo '```'; pnpm perf --ci --url "$SITE_URL" 2>&1; echo '```'; } | tee -a "$GITHUB_STEP_SUMMARY"
+          { echo '```'; cat "$RUNNER_TEMP/report.txt" 2>/dev/null; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

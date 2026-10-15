@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { problems } from './seo.ts';
+import { THEME_SCRIPT } from '../../src/layouts/theme.ts';
+import { blockedScripts, problems } from './seo.ts';
 
 const page = (
   over: Partial<Record<'title' | 'description' | 'h1', string>> = {},
@@ -42,4 +43,17 @@ test('duplicates and a missing Markdown twin fail', () => {
   );
   assert.match(found.join('\n'), /\/b\.html: same title as \/a\.html/);
   assert.match(found.join('\n'), /Markdown twin \/index\.md not built/);
+});
+
+test('only scripts the CSP allows pass: the theme script, never a new inline one', () => {
+  const json = '<script type="application/ld+json">{"@context":"https://schema.org"}</script>';
+  assert.deepEqual(blockedScripts(`<head><script>${THEME_SCRIPT}</script>${json}</head>`), []);
+  const [inline] = blockedScripts('<script>document.body.dataset.x=""</script>');
+  assert.match(inline, /inline script is blocked by the CSP: allow 'sha256-[A-Za-z0-9+/]+=*'/);
+  assert.match(blockedScripts('<script type="module" src="/_astro/a.js"></script>')[0], /a\.js/);
+  assert.deepEqual(
+    blockedScripts('<script src="/a.js"></script>', "default-src 'self'"),
+    [],
+    'without script-src, default-src applies',
+  );
 });

@@ -25,7 +25,6 @@
     "delivery:pr-create": "node scripts/delivery.ts pr-create",
     "delivery:merge": "node scripts/delivery.ts merge",
     "deploy": "pnpm build && wrangler deploy",
-    "preview:worker": "pnpm build && wrangler dev --port 8787",
     "deploy:agenda": "wrangler deploy --config agenda/wrangler.jsonc",
     "dev:agenda": "wrangler dev --config agenda/wrangler.jsonc --port 8788"
   },
@@ -38,7 +37,9 @@
     "@biomejs/biome": "2.5.15",
     "@tailwindcss/vite": "4.3.3",
     "@types/node": "24.19.2",
+    "chrome-launcher": "1.2.2",
     "knip": "6.41.0",
+    "lighthouse": "13.5.0",
     "tailwindcss": "4.3.3",
     "typescript": "6.0.3",
     "wrangler": "4.151.0"
