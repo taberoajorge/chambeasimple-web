@@ -6,6 +6,10 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { certify, repository, runHook } from './agent-hooks.ts';
 
+// Run from a Git hook (pre-push), git's GIT_* variables would point every git call in these tests,
+// including those made by agent-hooks.ts, at the real repository instead of the throwaway ones.
+for (const name of Object.keys(process.env)) if (name.startsWith('GIT_')) delete process.env[name];
+
 const denied = (out: Record<string, unknown>) => JSON.stringify(out).includes('"deny"');
 
 // One payload per client for the same intent: write a credential into a tracked file.
