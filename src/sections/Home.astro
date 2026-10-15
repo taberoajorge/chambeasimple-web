@@ -161,20 +161,13 @@ const ourClients = clients(import.meta.env.DEV);
             {t.cases.status[c.status]}
             {clientOf(c) && <span class="text-muted"> · {clientOf(c)?.name}</span>}
           </p>
-          {/* Solution badges: colored by solution type */}
           {c.solutions.length > 0 && (
             <div class="mt-2 flex flex-wrap gap-2">
               {c.solutions.map((solutionId) => {
                 const solutionTitle = t.solutions.items.find((s) => s.id === solutionId)?.title || solutionId;
                 return (
                   <span
-                    class:list={[
-                      'inline-flex rounded px-2 py-1 text-xs font-semibold text-white',
-                      solutionId === 'research' && 'bg-blue-500',
-                      solutionId === 'internal' && 'bg-emerald-500',
-                      solutionId === 'follow-up' && 'bg-orange-500',
-                      solutionId === 'integrations' && 'bg-purple-500',
-                    ]}
+                    class="inline-flex rounded bg-mint px-2 py-1 text-xs font-semibold text-ink"
                   >
                     {solutionTitle}
                   </span>

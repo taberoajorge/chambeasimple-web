@@ -129,25 +129,5 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
         >{t.cta.primary}</a
       >
     </div>
-    <script type="module">
-      // Scroll reveal: trigger animations when elements enter viewport
-      const revealElements = document.querySelectorAll('[data-scroll]');
-      if (revealElements.length > 0) {
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('scroll-reveal');
-                observer.unobserve(entry.target);
-              }
-            });
-          },
-          { threshold: 0.1 }
-        );
-        for (const el of revealElements) {
-          observer.observe(el);
-        }
-      }
-    </script>
   </body>
 </html>

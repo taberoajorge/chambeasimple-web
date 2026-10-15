@@ -153,7 +153,7 @@ body {
   display: flex;
 }
 
-/* Animation keyframes for scroll and load reveals */
+/* Scroll reveal keyframes */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -165,37 +165,15 @@ body {
   }
 }
 
-/* Scroll reveal class: applied by IntersectionObserver when element enters viewport */
-.scroll-reveal {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-/* Stagger delays for multiple elements via nth-child */
-.scroll-reveal:nth-child(1) {
-  animation-delay: 0ms;
-}
-
-.scroll-reveal:nth-child(2) {
-  animation-delay: 100ms;
-}
-
-.scroll-reveal:nth-child(3) {
-  animation-delay: 200ms;
-}
-
-.scroll-reveal:nth-child(4) {
-  animation-delay: 300ms;
-}
-
-.scroll-reveal:nth-child(5) {
-  animation-delay: 400ms;
-}
-
-/* Reduced motion fallback: disable animations, ensure content is visible */
-@media (prefers-reduced-motion: reduce) {
-  .scroll-reveal {
-    animation: none;
-    opacity: 1;
+/* Scroll reveal without JavaScript: the CSP allows only the theme script. Browsers without
+   scroll-driven animations just show the content. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-scroll] {
+      animation: fadeInUp linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
   }
 }
 
