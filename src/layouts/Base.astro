@@ -144,7 +144,9 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
           },
           { threshold: 0.1 }
         );
-        revealElements.forEach((el) => observer.observe(el));
+        for (const el of revealElements) {
+          observer.observe(el);
+        }
       }
     </script>
   </body>

@@ -221,7 +221,7 @@ body {
 /* Mobile: hide timeline line, show inline circles */
 @media (max-width: 767px) {
   .timeline {
-    border-left: none !important;
-    padding-left: 0 !important;
+    border-left: none;
+    padding-left: 0;
   }
 }
