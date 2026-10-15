@@ -29,7 +29,13 @@ test('a clash names the other worktree', () => {
 
 test('a deleted, unpruned worktree does not break the port lookup', () => {
   const root = mkdtempSync(join(tmpdir(), 'port-'));
-  const git = (...args: string[]) => execFileSync('git', args, { cwd: root, stdio: 'ignore' });
+  const git = (...args: string[]) => {
+    // Clean GIT_* env vars to avoid worktree side effects when running in pre-push hook
+    const env = Object.fromEntries(
+      Object.entries(process.env).filter(([k]) => !k.startsWith('GIT_')),
+    );
+    return execFileSync('git', args, { cwd: root, stdio: 'ignore', env });
+  };
   git('init', '-q');
   git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '--allow-empty', '-m', 'init');
   git('worktree', 'add', '-q', join(root, 'gone'));
