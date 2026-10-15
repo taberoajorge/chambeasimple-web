@@ -204,7 +204,7 @@ body {
   /* Desktop only: pseudo-element circle on the line */
   @media (min-width: 768px) {
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       left: -40px;
       top: 0;
