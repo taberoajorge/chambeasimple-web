@@ -11,7 +11,7 @@ const ok = (cmd: string, ...args: string[]) => {
   // In worktree hooks: GIT_DIR is inherited and child git processes inherit it too, causing
   // side effects when running git commands in temp dirs or via tests. Filter it out.
   const env = Object.fromEntries(
-    Object.entries(process.env).filter(([k]) => !k.startsWith('GIT_'))
+    Object.entries(process.env).filter(([k]) => !k.startsWith('GIT_')),
   );
   return spawnSync(cmd, args, { env }).status === 0;
 };
