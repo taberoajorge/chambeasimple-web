@@ -7,7 +7,14 @@ import { TITLE, TYPES } from './commit-msg.ts';
 const SECTIONS = ['Summary', 'Intent', 'Verification'];
 
 const git = (...args: string[]) => execFileSync('git', args, { encoding: 'utf8' }).trim();
-const ok = (cmd: string, ...args: string[]) => spawnSync(cmd, args).status === 0;
+const ok = (cmd: string, ...args: string[]) => {
+  // In worktree hooks: GIT_DIR is inherited and child git processes inherit it too, causing
+  // side effects when running git commands in temp dirs or via tests. Filter it out.
+  const env = Object.fromEntries(
+    Object.entries(process.env).filter(([k]) => !k.startsWith('GIT_'))
+  );
+  return spawnSync(cmd, args, { env }).status === 0;
+};
 
 // What is wrong with a PR title and body, if anything.
 export function prProblems(title: string, body: string): string[] {
