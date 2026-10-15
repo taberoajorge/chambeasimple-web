@@ -11,9 +11,11 @@ on:
 permissions:
   contents: read
 
+# A newer push supersedes a PR run; on main every run finishes, so a deploy is never cut off
+# between publishing and the smoke test that would roll it back.
 concurrency:
   group: check-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   check:
