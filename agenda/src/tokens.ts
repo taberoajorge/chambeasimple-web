@@ -13,6 +13,8 @@ export const TOKENS = `:root {
   --text: light-dark(#02130f, #effbf6);
   --muted: light-dark(#4a5e57, #a3b8b0);
   --accent: light-dark(#0a6b4b, #62f0bb);
+  /* Text on an accent fill: the light accent is a dark green, the dark accent is mint. */
+  --accent-ink: light-dark(#ffffff, #02130f);
   --line: light-dark(#c2d6cc, #33594c);
   --danger: light-dark(#b42318, #ff8a80);
   /* The closing contact band is ink in both themes; logos sit on a white plate in both. */

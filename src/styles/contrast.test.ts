@@ -38,6 +38,10 @@ for (const [name, theme] of [
           `${fg} on ${bg}: ${ratio(theme[fg], theme[bg]).toFixed(2)}`,
         );
     assert.ok(ratio(theme.ink, theme.mint) >= 4.5, 'ink on the mint button');
+    assert.ok(
+      ratio(theme['accent-ink'], theme.accent) >= 4.5,
+      `accent-ink on accent: ${ratio(theme['accent-ink'], theme.accent).toFixed(2)}`,
+    );
   });
 
 test('mint is never text on the light background', () => {
