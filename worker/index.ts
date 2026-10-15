@@ -2,6 +2,8 @@
 // Markdown or HTML for the same URL (agents ask with `Accept: text/markdown`), security headers,
 // `noindex` on any host that is not the real domain, and one cookieless data point per page view.
 
+import { CSP } from './csp.ts';
+
 type Env = {
   ASSETS: { fetch(request: Request): Promise<Response> };
   // Workers Analytics Engine. Optional so tests and `wrangler dev` work without it.
@@ -17,11 +19,7 @@ const HEADERS: Record<string, string> = {
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
   'X-Frame-Options': 'DENY',
-  // The only script allowed is the theme switch, by its hash (src/layouts/theme.ts): any other
-  // script, injected or not, does not run.
-  // Styles are inlined by the build; JSON-LD is data, not script, and is not affected.
-  'Content-Security-Policy':
-    "default-src 'self'; script-src 'sha256-p3mhDqiwtgsUvR6GI+J8dYJW1WTgh7mgc8elhjs+BgE='; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'self' https://agenda.chambasimple.com; frame-ancestors 'none'; upgrade-insecure-requests",
+  'Content-Security-Policy': CSP,
 };
 
 // A page URL (no extension) maps to its Markdown twin: / → /index.md, /en → /en.md.

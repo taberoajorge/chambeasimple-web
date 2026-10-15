@@ -1,8 +1,10 @@
 // Runs after `astro build` on every page in dist/: what a search engine or an agent needs from each
-// one. Fails the build with one line per problem.
+// one, and no script the Worker's CSP would block. Fails the build with one line per problem.
 // ponytail: regex over our own generated HTML, not a parser; Astro's output is regular enough.
+import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { CSP } from '../../worker/csp.ts';
 
 const SITE = 'https://chambasimple.com';
 
@@ -80,6 +82,24 @@ export const problems = (pages: Page[], exists: (file: string) => boolean): stri
   ...duplicates(pages),
 ];
 
+// What the browser would refuse to run under the CSP the Worker sends: an inline script whose hash is
+// not in script-src, or a script file without 'self'. Caught here, at build time, instead of by
+// Lighthouse on the Cloudflare preview. JSON-LD is data, never run, so it is left out.
+export const blockedScripts = (html: string, csp = CSP): string[] => {
+  const directive = (name: string) => new RegExp(`(?:^|;)\\s*${name}\\s([^;]*)`).exec(csp)?.[1];
+  const allowed = (directive('script-src') ?? directive('default-src') ?? '').trim().split(/\s+/);
+  return [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)].flatMap(([, attrs, body]) => {
+    if (/type="application\/ld\+json"/.test(attrs)) return [];
+    const src = /\ssrc="([^"]*)"/.exec(` ${attrs}`)?.[1];
+    if (src !== undefined)
+      return allowed.includes("'self'") ? [] : [`script ${src} is blocked by the CSP (no 'self')`];
+    const hash = `'sha256-${createHash('sha256').update(body).digest('base64')}'`;
+    return allowed.includes(hash)
+      ? []
+      : [`inline script is blocked by the CSP: allow ${hash} in worker/csp.ts or remove it`];
+  });
+};
+
 const htmlFiles = (dir: string): string[] =>
   readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
     e.isDirectory()
@@ -91,13 +111,21 @@ const htmlFiles = (dir: string): string[] =>
 
 if (import.meta.main) {
   const dist = new URL('../../dist/', import.meta.url).pathname;
-  const pages = htmlFiles(dist)
-    .filter((f) => !f.endsWith('404.html'))
-    .map((f) => ({ path: `/${relative(dist, f)}`, html: readFileSync(f, 'utf8') }));
-  const found = problems(pages, (file) => existsSync(join(dist, file)));
+  const all = htmlFiles(dist).map((f) => ({
+    path: `/${relative(dist, f)}`,
+    html: readFileSync(f, 'utf8'),
+  }));
+  // The 404 page is not indexed, but it runs under the same CSP.
+  const pages = all.filter(({ path }) => !path.endsWith('404.html'));
+  const found = [
+    ...problems(pages, (file) => existsSync(join(dist, file))),
+    ...all.flatMap(({ path, html }) => blockedScripts(html).map((p) => `${path}: ${p}`)),
+  ];
   if (found.length) {
     process.stderr.write(`seo: ${found.length} problem(s)\n${found.join('\n')}\n`);
     process.exit(1);
   }
-  process.stdout.write(`seo: ${pages.length} pages ok\n`);
+  process.stdout.write(
+    `seo: ${pages.length} pages ok; csp: every script allowed on ${all.length}\n`,
+  );
 }
