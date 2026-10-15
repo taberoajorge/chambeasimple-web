@@ -152,3 +152,76 @@ body {
 :root[data-js] #theme {
   display: flex;
 }
+
+/* Animation keyframes for scroll and load reveals */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scroll reveal class: applied by IntersectionObserver when element enters viewport */
+.scroll-reveal {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Stagger delays for multiple elements via nth-child */
+.scroll-reveal:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.scroll-reveal:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+.scroll-reveal:nth-child(3) {
+  animation-delay: 200ms;
+}
+
+.scroll-reveal:nth-child(4) {
+  animation-delay: 300ms;
+}
+
+.scroll-reveal:nth-child(5) {
+  animation-delay: 400ms;
+}
+
+/* Reduced motion fallback: disable animations, ensure content is visible */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Timeline styling: vertical line with step circles */
+.timeline-step {
+  /* Desktop only: pseudo-element circle on the line */
+  @media (min-width: 768px) {
+    &::before {
+      content: '';
+      position: absolute;
+      left: -40px;
+      top: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+  }
+}
+
+/* Mobile: hide timeline line, show inline circles */
+@media (max-width: 767px) {
+  .timeline {
+    border-left: none !important;
+    padding-left: 0 !important;
+  }
+}
