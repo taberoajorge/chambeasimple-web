@@ -22,7 +22,10 @@
     // there. Emails go out through Resend, signed as chambasimple.com (agenda/src/mail.ts); the
     // owners' notice goes to NOTIFY, a SimpleLogin alias that forwards to both mailboxes.
     "PEOPLE": "hola@chambasimple.com",
-    "NOTIFY": "agenda@chambasimple.com"
+    "NOTIFY": "agenda@chambasimple.com",
+    // The main site's origin: the brand, the favicon and the privacy link point there. In dev,
+    // scripts/run.ts overrides it with the local site (so the header does not jump to production).
+    "SITE": "https://chambasimple.com"
   },
   // Secrets (wrangler secret put, never in the repo): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
   // GOOGLE_REFRESH_TOKEN (of hola@chambasimple.com), AGENDA_CALENDAR (the app's own calendar id),

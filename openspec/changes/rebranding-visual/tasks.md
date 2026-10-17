@@ -52,11 +52,11 @@
 
 ## 6. Hero Section refinamiento
 
-- [ ] 6.1 Verificar H1 font-size: 7-8vw desktop, 4.5-5vw mobile. Se verifica: dev server 1440px título ~7.5vw, 390px ~5vw, measurements en inspector browser.
+- [x] 6.1 Tamaño del H1: `min(12cqw, 9vh)` en desktop (escala con el ancho de su columna y la altura del viewport, para que el Hero quepa en la primera pantalla), 4.5-5vw mobile. Se verifica: mediciones a 1024×768, 1280×800, 1440×900 y 1512×982 en español e inglés: el Hero queda dentro del viewport sin scroll.
 
 - [ ] 6.2 Agregar `data-scroll` a Hero elements (título, lema, CTA, Proceso card) con stagger delays. Se verifica: dev server page load, elementos fade-in con visual stagger.
 
-- [ ] 6.3 Verificar Hero layout: en desktop 1.5fr | 1fr grid, en mobile single column. Se verifica: 1440px grid layout, 390px single column, desktop Proceso card visible right, mobile below.
+- [x] 6.3 Verificar Hero layout: en desktop `lg:min-h-[calc(100dvh-var(--header-h))] lg:items-center` (llena la primera pantalla), `max-w-[100rem]` y `lg:grid-cols-[minmax(0,1fr)_minmax(18rem,28rem)]` (columna del título flexible, tarjeta de Proceso hasta 28rem y contigua), padding lateral `md:px-16`, en mobile single column. Se verifica: a 1861×900 la tarjeta mide 448px y queda a 48px del texto sin hueco muerto; la sección siguiente no asoma; 390px single column.
 
 ## 7. Testing: Responsive + Accesibilidad
 

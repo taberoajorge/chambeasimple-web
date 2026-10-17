@@ -10,8 +10,9 @@ free plan, at https://chambasimple.com.
 - Prepare a checkout or worktree: `sh scripts/bootstrap.sh` (Node from `.node-version`, Corepack).
   Orca runs it on its own (`orca.yaml`); outside Orca see `docs/worktrees.md`.
 - `corepack pnpm dev` / `pnpm preview`: this checkout's own port (`node scripts/port.ts` prints it).
-  `dev` is Astro and also shows cases that are not approved yet; `preview` serves the build behind
-  the Worker (`wrangler dev`), with the CSP and headers Cloudflare sends.
+  `dev` is Astro and also shows cases that are not approved yet, and serves the booking agenda
+  (`agenda/`) on port 8788, because the site's buttons point there while developing; `preview`
+  serves the build behind the Worker (`wrangler dev`), with the CSP and headers Cloudflare sends.
 - `pnpm check`: Biome, types, tests, import boundaries, dead code (Knip) and OpenSpec. Run it before
   saying work is done; it writes the check certificate the agent hooks look for.
 - `pnpm build`: the site, then `scripts/checks/seo.ts` on every page (SEO, and no script the

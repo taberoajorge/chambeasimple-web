@@ -32,7 +32,11 @@ El formulario SHALL pedir solo nombre, empresa, correo y qué quiere resolver (m
 - **THEN** no se crea ningún evento y el formulario dice qué corregir
 
 ### Requirement: Marca, accesibilidad y velocidad del sitio
-La página de la agenda SHALL usar la paleta, la tipografía y los temas claro y oscuro del sitio. Lighthouse MUST dar 100 en Accessibility, Best Practices y SEO, y 95 o más en Performance, en móvil y escritorio. El JavaScript MUST limitarse a elegir día y hora, en 15 KB o menos comprimido. Sin JavaScript, la página MUST ofrecer el correo como alternativa.
+La página de la agenda SHALL usar la paleta, la tipografía y los temas claro y oscuro del sitio. El encabezado SHALL ser el del sitio —la misma marca, los enlaces a sus secciones y el selector de idioma— con «Agenda una conversación» marcada como la página actual; el botón de tema queda fuera, porque el sitio lo maneja con JavaScript y la agenda no lleva scripts. Lighthouse MUST dar 100 en Accessibility, Best Practices y SEO, y 95 o más en Performance, en móvil y escritorio. El JavaScript MUST limitarse a elegir día y hora, en 15 KB o menos comprimido. Sin JavaScript, la página MUST ofrecer el correo como alternativa.
+
+#### Scenario: Ir y volver desde la agenda
+- **WHEN** alguien está en la agenda y usa el encabezado
+- **THEN** ve la marca, los enlaces a las secciones del sitio y el cambio de idioma, con la agenda marcada como la página actual
 
 #### Scenario: Teclado y lector de pantalla
 - **WHEN** alguien reserva solo con el teclado

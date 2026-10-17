@@ -27,10 +27,11 @@ export type Env = {
   TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET?: string;
   RESEND_API_KEY?: string; // when set, the agenda sends its own signed emails (mail.ts)
+  SITE?: string; // the main site's origin; dev points it at the local site (scripts/run.ts)
 };
 
 const EMAIL = 'hola@chambasimple.com';
-const SITE = 'https://chambasimple.com';
+const SITE = 'https://chambasimple.com'; // production default, also CSP and privacy links
 const PER_EMAIL = 2; // bookings per email per 7 days
 
 // The site button a visitor came from (?from=hero): short, lowercase, or nothing.
@@ -69,13 +70,15 @@ const mail = (env: Env): Mail | null =>
       }
     : null;
 
-const csp = (turnstile: boolean) =>
+const siteOf = (env: Env) => env.SITE ?? SITE;
+
+const csp = (turnstile: boolean, site: string) =>
   [
     "default-src 'self'",
     turnstile ? 'script-src https://challenges.cloudflare.com' : "script-src 'none'",
     turnstile ? 'frame-src https://challenges.cloudflare.com' : '',
     "style-src 'unsafe-inline'",
-    `img-src 'self' ${SITE}`,
+    `img-src 'self' ${site}`,
     "form-action 'self'",
     "base-uri 'none'",
     "frame-ancestors 'none'",
@@ -89,7 +92,7 @@ const html = (body: string, status: number, env: Env) =>
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': 'no-store',
-      'Content-Security-Policy': csp(Boolean(env.TURNSTILE_SITE_KEY)),
+      'Content-Security-Policy': csp(Boolean(env.TURNSTILE_SITE_KEY), siteOf(env)),
       'X-Content-Type-Options': 'nosniff',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'X-Robots-Tag': 'noindex',
@@ -136,6 +139,7 @@ type Ctx = {
   t: AgendaText;
   lang: 'es' | 'en';
   timeZone: string;
+  site: string;
   page: (status: number, extra?: Extra) => Promise<Response>;
 };
 
@@ -171,7 +175,7 @@ async function confirm({ env, now, g, timeZone }: Ctx, booking: Booking, from: s
 }
 
 async function submit(ctx: Ctx): Promise<Response> {
-  const { request, env, now, g, t, lang, timeZone, page } = ctx;
+  const { request, env, now, g, t, lang, timeZone, site, page } = ctx;
   const blocked = await guard(ctx);
   if (blocked) return blocked;
   const form = await request.formData();
@@ -203,8 +207,7 @@ async function submit(ctx: Ctx): Promise<Response> {
     const event = await confirm(ctx, { ...read, minutes: HOURS.minutes, lang }, from);
     await env.KV.put(key, String(count + 1), { expirationTtl: 7 * 86_400 });
     await env.KV.delete('busy');
-    const home = lang === 'es' ? SITE : `${SITE}/en`;
-    return html(donePage(t, read.start, timeZone, event.meet, home), 200, env);
+    return html(donePage(t, read.start, timeZone, event.meet, site), 200, env);
   } catch {
     return page(502, { error: t.errors.google, values, chosen: read.start, from });
   }
@@ -220,11 +223,12 @@ async function handle(request: Request, env: Env, now: number): Promise<Response
     return new Response('Not found', { status: 404 });
   const t: AgendaText = AGENDA[lang];
   const g = google(env);
-  if (!g || !healthy) return html(closedPage(t, EMAIL), 200, env);
+  const site = siteOf(env);
+  if (!g || !healthy) return html(closedPage(t, EMAIL, site), 200, env);
 
   const timeZone =
     (request as Request & { cf?: { timezone?: string } }).cf?.timezone ?? HOURS.timeZone;
-  const privacy = `${SITE}${lang === 'es' ? '/privacidad' : '/en/privacy'}`;
+  const privacy = `${site}${lang === 'es' ? '/privacidad' : '/en/privacy'}`;
   const page = async (status: number, extra: Extra = {}) =>
     html(
       bookingPage({
@@ -233,6 +237,7 @@ async function handle(request: Request, env: Env, now: number): Promise<Response
         timeZone,
         stamp: await stamp(env.FORM_SECRET as string, now),
         email: EMAIL,
+        site,
         privacy,
         turnstile: env.TURNSTILE_SITE_KEY,
         ...extra,
@@ -242,7 +247,7 @@ async function handle(request: Request, env: Env, now: number): Promise<Response
     );
   return request.method === 'GET'
     ? page(200, { from: buttonFrom(url.searchParams.get('from')) })
-    : submit({ request, env, now, g, t, lang, timeZone, page });
+    : submit({ request, env, now, g, t, lang, timeZone, site, page });
 }
 
 export default {

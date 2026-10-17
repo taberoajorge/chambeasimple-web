@@ -16,12 +16,12 @@
 
 ## 3. Página
 
-- [x] 3.1 Página en español e inglés con la marca, los temas y el selector de día y hora; aviso de privacidad. Se verifica con la skill `verify-ui` (390 y 1440 px, claro y oscuro, teclado, sin JS) y con Lighthouse en los umbrales del spec. (2026-10-16: la marca del encabezado quedó "chambasimple" en un solo hijo flex, para que el hueco del topbar no parta la palabra, y el selector de idioma pasó a relativo, para no salir del origen que sirve la página.)
+- [x] 3.1 Página en español e inglés con la marca, los temas y el selector de día y hora; aviso de privacidad. Se verifica con la skill `verify-ui` (390 y 1440 px, claro y oscuro, teclado, sin JS) y con Lighthouse en los umbrales del spec. (2026-10-16: la marca del encabezado quedó "chambasimple" en un solo hijo flex, para que el hueco del topbar no parta la palabra, y el selector de idioma pasó a relativo, para no salir del origen que sirve la página. La marca, el favicon y el enlace de privacidad usan la var `SITE` (prod por defecto; `scripts/run.ts` la apunta al sitio local en dev, para que el encabezado no salte a producción). El encabezado pasó a replicar el del sitio —marca, los tres enlaces de sección y el selector de idioma, con «Agenda una conversación» marcada como la página actual— leyendo sus textos del contenido del sitio (`src/content/es.ts`) para que no se desvíen; sin el botón de tema, que necesita JavaScript.)
 
 ## 4. Publicación (con visto bueno de los dueños)
 
 - [x] 4.1 Desplegar en Cloudflare Workers Free con `agenda.chambasimple.com`. Se verifica con una reserva real de punta a punta.
-- [x] 4.2 Apuntar "Agenda una conversación" del sitio a la agenda. Se verifica con los tests del contenido y `pnpm perf` en verde. (2026-10-16: con `pnpm dev` los botones abren la agenda local de `dev:agenda` (puerto 8788) y el sitio construido sigue apuntando a `agenda.chambasimple.com`; hay un test para cada rama.)
+- [x] 4.2 Apuntar "Agenda una conversación" del sitio a la agenda. Se verifica con los tests del contenido y `pnpm perf` en verde. (2026-10-16: con `pnpm dev` los botones abren la agenda local (puerto 8788) y el sitio construido sigue apuntando a `agenda.chambasimple.com`; hay un test para cada rama. `pnpm dev` levanta el sitio y la agenda a la vez en `scripts/run.ts`, para que el botón funcione sin un segundo comando; `dev:agenda` queda para correr solo la agenda.)
 - [ ] 4.3 Documentar en `docs/` el MCP de Google Calendar para los dueños. Se verifica con los dos conectados desde su cliente.
 
 ## 5. Correo con nuestro dominio (2026-10-14)
