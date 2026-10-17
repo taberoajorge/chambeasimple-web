@@ -19,7 +19,7 @@ export const en: Content = {
     primary: 'Book a call',
   },
   hero: {
-    title: 'Custom software, built around how your business works',
+    title: 'Custom software for the way your business works',
     lema: 'We build software for good work.',
     lead: 'For teams still doing by hand what software could do for them: finding customers, following up, keeping operations organized or connecting their tools. We start by learning how you work. Then we build in phases, and you see each one working.',
     secondary: 'See case studies',

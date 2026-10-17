@@ -216,7 +216,14 @@ const ourClients = clients(import.meta.env.DEV);
     {
       TEAM.map((p) => (
         <Card title={p.name}>
-          <p slot="eyebrow" class="text-sm font-semibold text-accent">{t.team.people[p.id].role}</p>
+          <div slot="eyebrow" class="flex items-center gap-4">
+            {/* The name is the card's title, so both pictures are decorative. */}
+            <span class="avatar size-28 shrink-0 bg-mint">
+              <img src={p.avatar} width="112" height="112" alt="" decoding="async" />
+              {p.photo && <img src={p.photo} width="112" height="112" alt="" loading="lazy" decoding="async" class="avatar-photo" />}
+            </span>
+            <p class="text-sm font-semibold text-accent">{t.team.people[p.id].role}</p>
+          </div>
           {t.team.people[p.id].bio}
           {SITE.showLinkedIn && (
             <a slot="footer" href={p.linkedin} rel="me noopener" class="flex min-h-11 items-center font-semibold underline underline-offset-4">
@@ -248,17 +255,19 @@ const ourClients = clients(import.meta.env.DEV);
 </Section>
 
 <section aria-labelledby="contact-h" class="border-t border-line bg-band text-band-text">
-  <div class="mx-auto max-w-6xl px-5 py-16 text-center md:px-8 md:py-24">
-    <h2 id="contact-h" class="text-3xl font-extrabold tracking-tight text-balance md:text-4xl">
+  <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+    <h2 id="contact-h" class="text-4xl font-extrabold tracking-tight text-balance md:text-5xl">
       {t.contact.title}
     </h2>
-    <p class="mx-auto mt-4 max-w-xl text-lg text-band-muted">{t.contact.body}</p>
-    <a href={book(lang, 'contact')} class="btn-primary mt-8">{t.cta.primary}</a>
-    <p class="mt-4 text-band-muted">
-      {t.contact.email}{' '}
-      <a href={`mailto:${SITE.email}`} class="font-semibold text-mint underline underline-offset-4"
-        >{SITE.email}</a
-      >
-    </p>
+    <p class="mt-5 max-w-2xl text-lg text-band-muted">{t.contact.body}</p>
+    <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+      <a href={book(lang, 'contact')} class="btn-primary">{t.cta.primary}</a>
+      <p class="text-band-muted">
+        {t.contact.email}{' '}
+        <a href={`mailto:${SITE.email}`} class="font-semibold text-band-text underline underline-offset-4"
+          >{SITE.email}</a
+        >
+      </p>
+    </div>
   </div>
 </section>

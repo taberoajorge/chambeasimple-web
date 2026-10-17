@@ -10,9 +10,9 @@
 
 ## 2. Pipeline
 
-- [ ] 2.1 `.github/workflows/check.yml`: caché de pnpm, `preview` con `url` y `pages`, matriz `audit`, job final `lighthouse`, sin `perf`; `deploy` tras `check` y Lighthouse de producción en su propio job. Se verifica con las corridas del PR de este cambio.
+- [x] 2.1 `.github/workflows/check.yml`: caché de pnpm, `preview` con `url` y `pages`, matriz `audit`, job final `lighthouse`, sin `perf`; `deploy` tras `check` y Lighthouse de producción en su propio job. Se verifica con las corridas del PR de este cambio. (2026-10-15: verificado con la corrida 38729286336 del PR #5: `check`, `preview`, la matriz `audit` de 10 páginas y `lighthouse` en verde, 13 jobs en success y 2 omitidos)
 - [x] 2.2 `monitor.yml` con la misma instalación de pnpm y caché; su Lighthouse toma las páginas del sitemap de producción. (`copilot-setup-steps.yml` sigue con `scripts/bootstrap.sh`, como cualquier copia.) Se verifica con `actionlint`.
-- [ ] 2.3 Checks obligatorios de `main`: `check` y `lighthouse`, estrictos. Se verifica con `gh api repos/taberoajorge/chambeasimple-web/branches/main/protection/required_status_checks`.
+- [x] 2.3 Checks obligatorios de `main`: `check` y `lighthouse`, estrictos. Se verifica con `gh api repos/taberoajorge/chambeasimple-web/branches/main/protection/required_status_checks`. (2026-10-15: verificado. La API devuelve `{"contexts":["check","lighthouse"],"strict":true}`)
 
 ## 3. Documentación
 

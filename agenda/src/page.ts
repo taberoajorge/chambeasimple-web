@@ -12,8 +12,8 @@ const esc = (s: string) =>
 
 const CSS = `${TOKENS}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:2;border-bottom:1px solid var(--line);background:var(--bg)}.topbar{max-width:72rem;margin:0 auto;padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}.brand{display:inline-flex;align-items:center;gap:.5rem;font-weight:800;font-size:1.25rem;color:var(--text);text-decoration:none}.brand>span>span{color:var(--accent)}.brand-mark{width:1.75rem;height:1.75rem;transition:transform .35s ease,filter .35s ease}.brand:hover .brand-mark,.brand:focus-visible .brand-mark{transform:rotate(-8deg) scale(1.08);filter:drop-shadow(0 0 .45rem var(--mint))}.lang{min-height:44px;display:inline-flex;align-items:center;color:var(--text);font-size:.875rem;font-weight:600}
 main{max-width:46rem;margin:0 auto;padding:2.5rem 1.25rem 4rem}a{color:var(--accent)}
-.brand{font-weight:800;font-size:1.25rem;color:var(--text);text-decoration:none}.brand span{color:var(--accent)}
 h1{font-size:clamp(1.9rem,5vw,2.6rem);line-height:1.1;margin:1.5rem 0 .75rem}p.muted,.hint{color:var(--muted)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:1rem;padding:1.25rem;margin-top:1.5rem}
 fieldset{border:0;margin:0;padding:0}legend{font-weight:700;margin-bottom:.5rem}
@@ -33,12 +33,15 @@ button,.btn{display:inline-flex;min-height:48px;align-items:center;justify-conte
 
 type Shell = { t: AgendaText; title: string; body: string; turnstile?: string };
 
+// The wordmark is one flex child: as bare text + span, the topbar gap would split the word in
+// two. The language switch is relative, so local dev and previews never jump to the published
+// agenda.
 const shell = ({ t, title, body, turnstile }: Shell) => `<!doctype html>
 <html lang="${t.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${esc(t.description)}">
 <meta name="robots" content="noindex"><link rel="icon" href="https://chambasimple.com/favicon.svg" type="image/svg+xml">
 <style>${CSS}</style>${turnstile ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' : ''}</head>
-<body><main><a class="brand" href="https://chambasimple.com${t.lang === 'en' ? '/en' : '/'}">chambea<span>simple</span></a>${body}</main></body></html>`;
+<body><header><div class="topbar"><a class="brand" href="https://chambasimple.com${t.lang === 'en' ? '/en' : '/'}"><svg aria-hidden="true" class="brand-mark" viewBox="0 0 74 74" fill="var(--mint)"><rect x="0" y="46" width="12" height="12" rx="2.4"/><rect x="14" y="60" width="14" height="14" rx="2.8"/><rect x="26" y="42" width="16" height="16" rx="3.2"/><rect x="39" y="22" width="18" height="18" rx="3.6"/><rect x="53" y="0" width="20" height="20" rx="4"/></svg><span>chamba<span>simple</span></span></a><a class="lang" href="${t.lang === 'en' ? '/' : '/en'}">${t.lang === 'en' ? 'Español' : 'English'}</a></div></header><main>${body}</main></body></html>`;
 
 export type Values = Partial<Record<'name' | 'company' | 'email' | 'need', string>>;
 

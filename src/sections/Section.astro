@@ -16,7 +16,15 @@ const { id, title, intro, tone = 'bg' } = Astro.props;
   class:list={['border-t border-line', tone === 'surface' && 'bg-surface']}
 >
   <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-    <h2 id={`${id}-h`} class="text-3xl font-extrabold tracking-tight text-balance md:text-4xl">
+    {/* From md the title stays under the header while its section is on screen, then leaves with it.
+        Not on phones: header, title and the contact bar together would leave little to read. */}
+    <h2
+      id={`${id}-h`}
+      class:list={[
+        'text-3xl font-extrabold tracking-tight text-balance md:sticky md:top-(--header-h) md:z-20 md:-m-4 md:p-4 md:text-4xl',
+        tone === 'surface' ? 'bg-surface' : 'bg-bg',
+      ]}
+    >
       {title}
     </h2>
     {intro && <p class="mt-4 max-w-2xl text-lg text-muted">{intro}</p>}
