@@ -53,6 +53,69 @@ test('browsers get HTML, with security headers and Vary: Accept', async () => {
   assert.equal(res.headers.get('x-robots-tag'), null);
 });
 
+test('text is gzipped when the browser accepts it, and left alone otherwise', async () => {
+  const gz = await worker.fetch(
+    new Request('https://chambasimple.com/', {
+      headers: { accept: 'text/html', 'accept-encoding': 'br, gzip' },
+    }),
+    env,
+  );
+  assert.equal(gz.headers.get('content-encoding'), 'gzip');
+  assert.match(gz.headers.get('vary') ?? '', /Accept-Encoding/);
+  assert.equal(gz.headers.get('content-length'), null, 'the size changed, so the header goes');
+  const body = await new Response(gz.body!.pipeThrough(new DecompressionStream('gzip'))).text();
+  assert.equal(body, '<h1>Hola</h1>');
+
+  const plain = await get('https://chambasimple.com/');
+  assert.equal(plain.headers.get('content-encoding'), null);
+
+  const svg = await worker.fetch(
+    new Request('https://chambasimple.com/favicon.svg', {
+      headers: { accept: 'image/svg+xml', 'accept-encoding': 'gzip' },
+    }),
+    env,
+  );
+  assert.equal(svg.headers.get('content-encoding'), null, 'only text is compressed');
+
+  // Cloudflare rewrites Accept-Encoding; the client's real value wins, so a client that sent
+  // nothing is not sent gzip it cannot decode.
+  const refused = Object.assign(
+    new Request('https://chambasimple.com/', {
+      headers: { accept: 'text/html', 'accept-encoding': 'br, gzip' },
+    }),
+    { cf: { clientAcceptEncoding: '' } },
+  );
+  const none = await worker.fetch(refused, env);
+  assert.equal(none.headers.get('content-encoding'), null, 'the client Accept-Encoding decides');
+});
+
+// Node's Response never re-encodes a body, so the runtime's gzip-inside-gzip cannot be reproduced
+// here: spy on the constructor and check the body is marked manual.
+test('the gzipped body is marked manual, so the Worker runtime does not compress it twice', async () => {
+  const Real = globalThis.Response;
+  const inits: unknown[] = [];
+  globalThis.Response = new Proxy(Real, {
+    construct(target, args) {
+      inits.push(args[1]);
+      return Reflect.construct(target, args);
+    },
+  }) as typeof Response;
+  try {
+    await worker.fetch(
+      new Request('https://chambasimple.com/', {
+        headers: { accept: 'text/html', 'accept-encoding': 'gzip' },
+      }),
+      env,
+    );
+  } finally {
+    globalThis.Response = Real;
+  }
+  assert.ok(
+    inits.some((init) => (init as { encodeBody?: string } | undefined)?.encodeBody === 'manual'),
+    'the compressed response must set encodeBody: manual, or the runtime gzips it again',
+  );
+});
+
 test('previews are never indexed', async () => {
   const res = await get('https://chambeasimple-web.example.workers.dev/');
   assert.equal(res.headers.get('x-robots-tag'), 'noindex');
