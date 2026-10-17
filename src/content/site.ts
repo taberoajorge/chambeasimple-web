@@ -5,11 +5,17 @@ import type { Content } from './es.ts';
 
 export type Country = 'PE' | 'MX'; // add a code when the first client from there arrives
 
+// While developing, the buttons must open the local agenda (`dev:agenda` in package.json locks
+// port 8788) so the agenda is tested against the local site. Built pages always point at the
+// published one. Tests run without `import.meta.env`, so they exercise the published branch.
+export const agendaUrl = (dev: boolean) =>
+  dev ? 'http://localhost:8788' : 'https://agenda.chambasimple.com';
+
 export const SITE = {
   url: 'https://chambasimple.com',
   name: 'Chambea Simple',
   email: 'hola@chambasimple.com',
-  agenda: 'https://agenda.chambasimple.com',
+  agenda: agendaUrl(import.meta.env?.DEV),
   whatsapp: '', // international format without "+", e.g. "51999999999"
   // Where we can issue a local invoice (we have tax residence only in Peru and Mexico). An entry
   // shows up, in the footer, the FAQ and the JSON-LD, once its tax id is filled in.
@@ -24,9 +30,22 @@ export const SITE = {
   showLinkedIn: true,
 };
 
+// avatar: the illustration always shown. photo: a square webp in public/team/, shown on hover.
 export const TEAM = [
-  { id: 'sandra', name: 'Sandra Arroyo', linkedin: 'https://www.linkedin.com/in/sandiroar/' },
-  { id: 'alex', name: 'Alex Taberoa', linkedin: 'https://www.linkedin.com/in/taberoajorge/' },
+  {
+    id: 'sandra',
+    name: 'Sandra Arroyo',
+    linkedin: 'https://www.linkedin.com/in/sandiroar/',
+    avatar: '/team/sandra.svg',
+    photo: '/team/sandra.webp',
+  },
+  {
+    id: 'alex',
+    name: 'Alex Taberoa',
+    linkedin: 'https://www.linkedin.com/in/taberoajorge/',
+    avatar: '/team/alex.svg',
+    photo: '/team/alex.webp',
+  },
 ] as const;
 
 export const PATHS = {

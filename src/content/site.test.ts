@@ -5,11 +5,17 @@ import { clientOf, published } from './cases.ts';
 import { clients } from './clients.ts';
 import { en } from './en.ts';
 import { es } from './es.ts';
-import { book, faqItems, invoicing, SITE } from './site.ts';
+import { agendaUrl, book, faqItems, invoicing, SITE } from './site.ts';
 
 test('every book-a-call link goes to the agenda in the right language, with its origin', () => {
   assert.equal(book('es', 'hero'), 'https://agenda.chambasimple.com?from=hero');
   assert.equal(book('en', 'case-ol'), 'https://agenda.chambasimple.com/en?from=case-ol');
+});
+
+test('only pnpm dev books against the local agenda; builds and tests use the published one', () => {
+  assert.equal(agendaUrl(true), 'http://localhost:8788');
+  assert.equal(agendaUrl(false), 'https://agenda.chambasimple.com');
+  assert.equal(SITE.agenda, 'https://agenda.chambasimple.com', 'tests have no import.meta.env');
 });
 
 test('the invoice question appears only when the company can issue invoices', () => {
