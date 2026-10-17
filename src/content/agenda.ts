@@ -20,7 +20,7 @@ const es = {
   nav: navOf(siteEs),
   title: 'Agenda una conversación de 30 minutos',
   description:
-    'Elige un horario libre para conversar con Chambea Simple sobre tu proyecto. Es gratis, por Google Meet.',
+    'Elige un horario libre para conversar con Chamba Simple sobre tu proyecto. Es gratis, por Google Meet.',
   lead: 'Es gratis y por Google Meet. Cuéntanos qué hace tu equipo a mano hoy y vemos si podemos ayudarte.',
   timeZone: (tz: string) => `Horarios en tu hora: ${tz}.`,
   pick: 'Elige un horario',
@@ -43,13 +43,13 @@ const es = {
     back: 'Volver a chambasimple.com',
   },
   mail: {
-    subject: (when: string) => `Tu conversación con Chambea Simple: ${when}`,
+    subject: (when: string) => `Tu conversación con Chamba Simple: ${when}`,
     hello: (name: string) => `Hola, ${name}:`,
     body: (when: string) =>
       `Quedó agendada nuestra conversación de 30 minutos el ${when}. Adjuntamos la invitación para tu calendario.`,
     meet: 'Enlace de Google Meet',
     change: 'Si necesitas cambiar la hora, responde a este correo y lo coordinamos.',
-    signature: 'Sandra y Alex · Chambea Simple',
+    signature: 'Sandra y Alex · Chamba Simple',
     owners: (company: string) => `Nueva conversación agendada: ${company}`,
   },
   errors: {
@@ -68,7 +68,7 @@ const en: typeof es = {
   nav: navOf(siteEn),
   title: 'Book a 30-minute call',
   description:
-    'Pick a free time to talk with Chambea Simple about your project. Free, on Google Meet.',
+    'Pick a free time to talk with Chamba Simple about your project. Free, on Google Meet.',
   lead: 'Free, on Google Meet. Tell us what your team does by hand today and we will see if we can help.',
   timeZone: (tz: string) => `Times in your time zone: ${tz}.`,
   pick: 'Pick a time',
@@ -91,13 +91,13 @@ const en: typeof es = {
     back: 'Back to chambasimple.com',
   },
   mail: {
-    subject: (when: string) => `Your call with Chambea Simple: ${when}`,
+    subject: (when: string) => `Your call with Chamba Simple: ${when}`,
     hello: (name: string) => `Hi ${name},`,
     body: (when: string) =>
       `Our 30-minute call is booked for ${when}. The calendar invitation is attached.`,
     meet: 'Google Meet link',
     change: 'If you need another time, just reply to this email and we will sort it out.',
-    signature: 'Sandra and Alex · Chambea Simple',
+    signature: 'Sandra and Alex · Chamba Simple',
     owners: (company: string) => `New call booked: ${company}`,
   },
   errors: {

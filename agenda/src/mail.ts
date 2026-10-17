@@ -36,7 +36,7 @@ export function invitation(b: Booked, now: number) {
   const t = AGENDA[b.lang];
   return [
     'BEGIN:VCALENDAR',
-    'PRODID:-//Chambea Simple//Agenda//ES',
+    'PRODID:-//Chamba Simple//Agenda//ES',
     'VERSION:2.0',
     'CALSCALE:GREGORIAN',
     'METHOD:REQUEST',
@@ -45,10 +45,10 @@ export function invitation(b: Booked, now: number) {
     `DTSTAMP:${icsDate(now)}`,
     `DTSTART:${icsDate(b.start)}`,
     `DTEND:${icsDate(b.start + b.minutes * 60_000)}`,
-    `SUMMARY:${icsText(`Chambea Simple × ${b.company}`)}`,
+    `SUMMARY:${icsText(`Chamba Simple × ${b.company}`)}`,
     `DESCRIPTION:${icsText(`${t.mail.meet}: ${b.meet}\n\n${b.need}`)}`,
     `LOCATION:${icsText(b.meet)}`,
-    `ORGANIZER;CN=Chambea Simple:mailto:${ORGANIZER}`,
+    `ORGANIZER;CN=Chamba Simple:mailto:${ORGANIZER}`,
     `ATTENDEE;CN=${icsText(b.name)};ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${b.email}`,
     'STATUS:CONFIRMED',
     'SEQUENCE:0',

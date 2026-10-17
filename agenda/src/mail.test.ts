@@ -4,7 +4,7 @@ import { type Booked, invitation, ownersEmail, send, visitorEmail } from './mail
 
 const M = {
   apiKey: 'k',
-  from: 'Chambea Simple <agenda@chambasimple.com>',
+  from: 'Chamba Simple <agenda@chambasimple.com>',
   replyTo: 'hola@chambasimple.com',
   notify: ['agenda@chambasimple.com'],
 };
@@ -27,9 +27,9 @@ test('the invitation is a calendar REQUEST with organizer, attendee and escaped 
   assert.match(ics, /^BEGIN:VCALENDAR\r\n/);
   assert.match(ics, /METHOD:REQUEST/);
   assert.match(ics, /DTSTART:20261020T150000Z\r\nDTEND:20261020T153000Z/);
-  assert.match(ics, /ORGANIZER;CN=Chambea Simple:mailto:hola@chambasimple\.com/);
+  assert.match(ics, /ORGANIZER;CN=Chamba Simple:mailto:hola@chambasimple\.com/);
   assert.match(ics, /RSVP=TRUE:mailto:ana@acme\.pe/);
-  assert.match(ics, /SUMMARY:Chambea Simple × Acme\\, SAC\\; Lima/);
+  assert.match(ics, /SUMMARY:Chamba Simple × Acme\\, SAC\\; Lima/);
   assert.match(ics, /para ventas/);
   assert.ok(!ics.includes('Un CRM\npara'), 'newlines inside text are escaped');
 });
@@ -39,7 +39,7 @@ test('the visitor email comes from our domain, replies to hola@, escapes what th
   assert.equal(e.from, M.from);
   assert.equal(e.reply_to, 'hola@chambasimple.com');
   assert.deepEqual(e.to, ['ana@acme.pe']);
-  assert.match(e.subject, /Tu conversación con Chambea Simple/);
+  assert.match(e.subject, /Tu conversación con Chamba Simple/);
   assert.ok(!e.html.includes('<b>Pérez</b>'));
   assert.match(e.html, /&lt;b&gt;/);
   assert.equal(e.attachments[0].content_type, 'text/calendar; charset=utf-8; method=REQUEST');

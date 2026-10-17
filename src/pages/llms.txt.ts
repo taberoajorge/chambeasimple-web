@@ -1,4 +1,4 @@
-// llms.txt (https://llmstxt.org): what Chambea Simple is and where the Markdown of each page lives.
+// llms.txt (https://llmstxt.org): what Chamba Simple is and where the Markdown of each page lives.
 import type { APIRoute } from 'astro';
 import { published } from '../content/cases.ts';
 import { clients } from '../content/clients.ts';

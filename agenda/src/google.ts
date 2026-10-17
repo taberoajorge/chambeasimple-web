@@ -75,7 +75,7 @@ export async function book(
   );
   url.searchParams.set('conferenceDataVersion', '1');
   url.searchParams.set('sendUpdates', quiet ? 'none' : 'all');
-  const title = `Chambea Simple × ${b.company}`;
+  const title = `Chamba Simple × ${b.company}`;
   const res = await get(url, {
     method: 'POST',
     headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
