@@ -51,8 +51,8 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
     >
       {t.nav.skip}
     </a>
-    <!-- Fixed, so any section is one click away from anywhere on the page. z-30: the scroll-reveal
-         animations create stacking contexts that would otherwise paint over it. -->
+    <!-- Sticky, so any section is one click away from anywhere on the page. z-30: above the section
+         titles, which stick under it at z-20. -->
     <header class="sticky top-0 z-30 border-b border-line bg-bg">
       <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 md:px-8">
         <a

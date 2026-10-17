@@ -66,8 +66,49 @@ export function pointOf(request: Request, url: URL, status: number) {
   };
 }
 
-function finish(response: Response, url: URL) {
+// What gzip actually shrinks. Images and fonts are already compressed.
+const COMPRESSIBLE = /^text\/|^application\/(json|xml|manifest\+json|\w+\+json)/;
+
+// Cloudflare rewrites the incoming Accept-Encoding to `br, gzip` (its edge decides) and keeps what
+// the client really asked for in `request.cf.clientAcceptEncoding`: negotiate on that, or a client
+// that cannot decode gzip would be sent gzip anyway.
+const acceptsGzip = (request: Request) => {
+  const cf = (request as Request & { cf?: { clientAcceptEncoding?: string } }).cf;
+  const accept = cf?.clientAcceptEncoding ?? request.headers.get('accept-encoding') ?? '';
+  return /\bgzip\b/i.test(accept);
+};
+
+// Cloudflare compresses Worker responses at the edge, but `no-transform` (below) turns that off, so
+// the pages would ship uncompressed. We gzip the text ourselves and keep `no-transform`, which is
+// what stops the zone from rewriting the page and tripping the CSP.
+function compressed(response: Response, request: Request): Response {
+  const length = response.headers.get('content-length');
+  if (
+    !response.body ||
+    response.headers.has('content-encoding') ||
+    (length !== null && Number(length) < 700) ||
+    !COMPRESSIBLE.test(response.headers.get('content-type') ?? '') ||
+    !acceptsGzip(request)
+  )
+    return response;
+  const out = new Response(response.body.pipeThrough(new CompressionStream('gzip')), {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+    // Cloudflare's ResponseInit extension. The body is already gzip, so without `manual` the Workers
+    // runtime compresses it again to match the Content-Encoding we declare and the browser gets
+    // gzip inside gzip (a bug Node's Response cannot reproduce, so the test below spies instead).
+    encodeBody: 'manual',
+  } as ResponseInit & { encodeBody: 'manual' });
+  out.headers.set('Content-Encoding', 'gzip');
+  out.headers.delete('Content-Length');
+  out.headers.append('Vary', 'Accept-Encoding');
+  return out;
+}
+
+function finish(response: Response, url: URL, request: Request, contentType?: string) {
   const out = new Response(response.body, response);
+  if (contentType) out.headers.set('Content-Type', contentType);
   for (const [k, v] of Object.entries(HEADERS)) out.headers.set(k, v);
   out.headers.append('Vary', 'Accept');
   // no-transform: Cloudflare must not rewrite our pages (its zone features inject scripts, like the
@@ -76,24 +117,20 @@ function finish(response: Response, url: URL) {
   out.headers.set('Cache-Control', cache ? `${cache}, no-transform` : 'no-transform');
   if (url.hostname !== DOMAIN) out.headers.set('X-Robots-Tag', 'noindex');
   else out.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  return out;
+  return compressed(out, request);
 }
 
 async function respond(request: Request, env: Env, url: URL): Promise<Response> {
   const twin = twinOf(url.pathname);
   if (twin && wantsMarkdown(request)) {
     const md = await env.ASSETS.fetch(new Request(new URL(twin, url), request));
-    if (md.ok) {
-      const out = finish(md, url);
-      out.headers.set('Content-Type', 'text/markdown; charset=utf-8');
-      return out;
-    }
+    if (md.ok) return finish(md, url, request, 'text/markdown; charset=utf-8');
   }
   const res = await env.ASSETS.fetch(request);
   // Cloudflare drops `.html` and trailing slashes with a 307; search engines want it permanent.
   const location = res.headers.get('location');
   if (res.status === 307 && location) return Response.redirect(new URL(location, url).href, 308);
-  return finish(res, url);
+  return finish(res, url, request);
 }
 
 export default {
