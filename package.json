@@ -26,7 +26,7 @@
     "delivery:merge": "node scripts/delivery.ts merge",
     "deploy": "pnpm build && wrangler deploy",
     "deploy:agenda": "wrangler deploy --config agenda/wrangler.jsonc",
-    "dev:agenda": "wrangler dev --config agenda/wrangler.jsonc --port 8788"
+    "dev:agenda": "wrangler dev --config agenda/wrangler.jsonc --port 8788 --var SITE:http://localhost:$(node scripts/port.ts)"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",

@@ -1,7 +1,23 @@
 // Text of the booking page at agenda.chambasimple.com (agenda/), in both languages.
+import { en as siteEn } from './en.ts';
+import { es as siteEs } from './es.ts';
+
+// The agenda's header mirrors the site's (same wordmark, section links and language switch), so its
+// labels are read from the site content instead of copied, and never drift.
+const navOf = (c: typeof siteEs) => ({
+  label: c.nav.label,
+  current: c.cta.primary,
+  switchTo: c.nav.switchTo.label,
+  links: [
+    { id: c.solutions.id, title: c.solutions.title },
+    { id: c.process.id, title: c.process.title },
+    { id: c.cases.id, title: c.cases.title },
+  ],
+});
 
 const es = {
   lang: 'es-PE',
+  nav: navOf(siteEs),
   title: 'Agenda una conversación de 30 minutos',
   description:
     'Elige un horario libre para conversar con Chambea Simple sobre tu proyecto. Es gratis, por Google Meet.',
@@ -49,6 +65,7 @@ const es = {
 
 const en: typeof es = {
   lang: 'en',
+  nav: navOf(siteEn),
   title: 'Book a 30-minute call',
   description:
     'Pick a free time to talk with Chambea Simple about your project. Free, on Google Meet.',
