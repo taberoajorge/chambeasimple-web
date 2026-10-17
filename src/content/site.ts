@@ -13,7 +13,7 @@ export const agendaUrl = (dev: boolean) =>
 
 export const SITE = {
   url: 'https://chambasimple.com',
-  name: 'Chambea Simple',
+  name: 'Chamba Simple',
   email: 'hola@chambasimple.com',
   agenda: agendaUrl(import.meta.env?.DEV),
   whatsapp: '', // international format without "+", e.g. "51999999999"
@@ -26,7 +26,7 @@ export const SITE = {
   // A starting price for a first version. Empty: only the method is shown.
   price: { pen: '', mxn: '', usd: '' },
   // The founders' LinkedIn links, so visitors can check who they would work with. Their profiles
-  // should list Chambea Simple in their experience (design.md, 4b).
+  // should list Chamba Simple in their experience (design.md, 4b).
   showLinkedIn: true,
 };
 

@@ -5,7 +5,7 @@ import type { Content } from './es.ts';
 export const en: Content = {
   lang: 'en',
   meta: {
-    title: 'Custom software development for businesses · Chambea Simple',
+    title: 'Custom software development for businesses · Chamba Simple',
     description:
       'Custom software development for companies in Peru, Mexico and beyond: AI prospect research, follow-up, internal tools and integrations. See a pilot work first.',
   },
@@ -243,7 +243,7 @@ export const en: Content = {
   privacy: {
     title: 'Privacy',
     description:
-      'What data Chambea Simple handles: no cookies or tracking, visits counted without identifying anyone, and your rights over the data you give us.',
+      'What data Chamba Simple handles: no cookies or tracking, visits counted without identifying anyone, and your rights over the data you give us.',
     updated: 'Updated October 14, 2026.',
     sections: [
       {
@@ -267,7 +267,7 @@ export const en: Content = {
     link: 'Privacy',
   },
   footer: {
-    rights: 'Chambea Simple',
+    rights: 'Chamba Simple',
     inFormation: 'Incorporation in progress.',
     markdown: 'This page in Markdown',
   },

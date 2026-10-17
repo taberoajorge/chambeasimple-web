@@ -61,7 +61,7 @@ const mail = (env: Env): Mail | null =>
   env.RESEND_API_KEY
     ? {
         apiKey: env.RESEND_API_KEY,
-        from: 'Chambea Simple <agenda@chambasimple.com>',
+        from: 'Chamba Simple <agenda@chambasimple.com>',
         replyTo: EMAIL,
         notify: (env.NOTIFY ?? '')
           .split(',')

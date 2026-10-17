@@ -4,7 +4,7 @@
 export const es = {
   lang: 'es-PE',
   meta: {
-    title: 'Chambea Simple · Software a la medida para empresas',
+    title: 'Chamba Simple · Software a la medida para empresas',
     description:
       'Software a la medida para empresas en Perú y México: investigación con IA, seguimiento de clientes, sistemas internos e integraciones. Lo ves funcionar antes.',
   },
@@ -242,7 +242,7 @@ export const es = {
   privacy: {
     title: 'Privacidad',
     description:
-      'Qué datos trata Chambea Simple: sin cookies ni rastreo, visitas medidas sin identificar a nadie, y tus derechos sobre los datos que nos das.',
+      'Qué datos trata Chamba Simple: sin cookies ni rastreo, visitas medidas sin identificar a nadie, y tus derechos sobre los datos que nos das.',
     updated: 'Actualizado el 14 de octubre de 2026.',
     sections: [
       {
@@ -266,7 +266,7 @@ export const es = {
     link: 'Privacidad',
   },
   footer: {
-    rights: 'Chambea Simple',
+    rights: 'Chamba Simple',
     inFormation: 'Empresa en constitución.',
     markdown: 'Esta página en Markdown',
   },
