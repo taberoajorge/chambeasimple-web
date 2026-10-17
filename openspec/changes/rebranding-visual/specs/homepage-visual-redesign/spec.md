@@ -7,11 +7,15 @@ Rediseño visual de la homepage de Chamba Simple: de presentación corporativa a
 ## ADDED Requirements
 
 ### Requirement: Hero Section Visual Hierarchy
-La sección Hero SHALL mostrar tipografía mejorada con jerarquía clara. El título principal SHALL tener tamaño de 7-8vw en desktop y 4-5vw en móvil. El elemento de Proceso Visual SHALL ser una tarjeta destacada con mayor peso visual (border, fondo sutil, padding generoso).
+La sección Hero SHALL mostrar tipografía mejorada con jerarquía clara. El título principal SHALL usar el mayor tamaño que quepa: en desktop escala con el ancho de su columna y con la altura del viewport, de modo que todo el Hero (título, lema, enlaces y tarjeta de Proceso) quepa en la primera pantalla. El elemento de Proceso Visual SHALL ser una tarjeta destacada con mayor peso visual (border, fondo sutil, padding generoso) y SHALL ajustarse al ancho de su contenido, sin dejar hueco a su derecha. En desktop la sección SHALL ocupar toda la altura útil de la pantalla (`min-height: calc(100dvh - var(--header-h))`) y SHALL acotar su ancho para que la columna del texto y la tarjeta queden contiguas, sin hueco muerto entre ambas. La sección SHALL usar un padding lateral de 4rem en desktop (el doble que las demás secciones).
 
 #### Scenario: Hero on Desktop
 - **WHEN** usuario carga la página en viewport desktop (1440px)
-- **THEN** título tiene tamaño ≥7vw, lema es 2.5vw, Proceso Visual como tarjeta separada en derecha
+- **THEN** el título escala con el ancho de su columna y la altura del viewport (`min(12cqw, 9vh)`), el lema es 2.5vw, y el Proceso Visual es una tarjeta separada a la derecha, de ancho según su contenido (máx. 28rem)
+
+#### Scenario: Hero fits the first screen
+- **WHEN** usuario carga la página en desktop (de 1024×768 a 1512×982) en español o inglés
+- **THEN** la primera sección llena la altura útil de la pantalla, sin que la sección siguiente asome, con el título, el lema, los enlaces y la tarjeta de Proceso dentro del viewport
 
 #### Scenario: Hero on Mobile
 - **WHEN** usuario carga la página en viewport móvil (390px)
