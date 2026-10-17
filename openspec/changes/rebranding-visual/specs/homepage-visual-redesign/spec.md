@@ -21,10 +21,6 @@ La sección Hero SHALL mostrar tipografía mejorada con jerarquía clara. El tí
 - **WHEN** usuario carga la página en viewport móvil (390px)
 - **THEN** layout es single column, título 4.5-5vw, Proceso Visual debajo en full width, padding respeta mobile-first
 
-#### Scenario: Hero Animations
-- **WHEN** página carga
-- **THEN** título fade-in + slide up (200ms), lema aparece 100ms después, CTA aparece 200ms después, Proceso Visual 300ms después
-
 ### Requirement: Soluciones Bento Grid
 La sección Soluciones SHALL usar grid asimétrico tipo Bento: IA ocupa 2 columnas (col-span-2), resto (Seguimiento, CRM, Integraciones) ocupan 1 columna cada uno. Grid SHALL ser responsivo: en móvil todos los items ocupan 1 columna.
 
@@ -40,10 +36,6 @@ La sección Soluciones SHALL usar grid asimétrico tipo Bento: IA ocupa 2 column
 - **WHEN** usuario hoverea un BentoGridItem
 - **THEN** card tiene scale(1.02), border cambia a mint (accent), shadow sutil aparece
 
-#### Scenario: Bento Scroll Reveal
-- **WHEN** usuario hace scroll y sección entra en viewport
-- **THEN** cada item fade-in + slide up con 100ms stagger entre items
-
 ### Requirement: Casos Cards with Solution Badges
 Cada card de caso SHALL mostrar badges de soluciones (IA, CRM, Seguimiento, Integraciones) que se usaron en ese caso. Badges SHALL tener colores dinámicos: IA=azul (#3B82F6), CRM=mint (#62F0BB), Seguimiento=naranja (#F97316), Integraciones=púrpura (#A78BFA).
 
@@ -55,20 +47,12 @@ Cada card de caso SHALL mostrar badges de soluciones (IA, CRM, Seguimiento, Inte
 - **WHEN** usuario hoverea una card de caso
 - **THEN** border cambia a accent (mint), badges se vuelven más vibrantes (saturación +15%)
 
-#### Scenario: Cases Scroll Reveal
-- **WHEN** usuario hace scroll a sección de casos
-- **THEN** cards fade-in + slide up con 100ms stagger
-
 ### Requirement: Proceso Timeline Visual
 La sección Proceso SHALL mostrar timeline visual: línea vertical conectando 5 pasos, números (● para activo, ○ para siguientes), contenido alineado a derecha de línea.
 
 #### Scenario: Timeline on Desktop
 - **WHEN** viewport ≥768px
 - **THEN** línea vertical en left (ancho 2px, color accent), 5 números connectados, contenido en right
-
-#### Scenario: Timeline Scroll Triggered
-- **WHEN** usuario hace scroll y Proceso entra en viewport
-- **THEN** línea crece de top a bottom (CSS animation), números revelan uno a uno (100ms stagger), contenido fades in con 200ms delay
 
 #### Scenario: Timeline on Mobile
 - **WHEN** viewport <768px
@@ -79,15 +63,15 @@ La sección Proceso SHALL mostrar timeline visual: línea vertical conectando 5 
 - **THEN** primer paso muestra ● (mint), resto muestran ○ (neutral color)
 
 ### Requirement: Global Animation System
-Animaciones SHALL usar CSS (no JavaScript) donde sea posible. Todos los animations SHALL respetar `prefers-reduced-motion` (fallback sin travel, solo opacity).
+La página SHALL no usar animaciones de entrada: el contenido SHALL pintarse de inmediato, sin scroll reveal ni fade-in on-load, porque un elemento del primer viewport que arranca en `opacity: 0` deja a Lighthouse sin LCP. Las únicas animaciones SHALL ser transiciones CSS de hover (tarjetas, avatar y wordmark), nunca JavaScript, y SHALL respetar `prefers-reduced-motion`.
 
-#### Scenario: Animations with Reduced Motion
-- **WHEN** usuario tiene `prefers-reduced-motion: reduce` en OS
-- **THEN** fade-in y slide animations usan 0 travel (solo opacity), velocidad es instant (0ms)
+#### Scenario: Content paints on load
+- **WHEN** la página carga
+- **THEN** todo el contenido es visible de inmediato, sin animaciones de entrada ni scroll reveal
 
-#### Scenario: Animation Keyframes
-- **WHEN** animaciones ejecutan on-load
-- **THEN** duraciones son 200-300ms, easing es ease-out, stagger entre items es 100ms
+#### Scenario: Hover transitions respect Reduced Motion
+- **WHEN** usuario tiene `prefers-reduced-motion: reduce` en el sistema
+- **THEN** las transiciones del avatar y el wordmark se desactivan (`transition: none`)
 
 ### Requirement: Lighthouse Performance
 Homepage SHALL mantener Lighthouse 100 en Performance, Accessibility, Best Practices, SEO (desktop y mobile).
