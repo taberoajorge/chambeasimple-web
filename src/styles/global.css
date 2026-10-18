@@ -100,6 +100,13 @@ body {
   outline-offset: 3px;
 }
 
+/* Selecting text reads as ours instead of the browser's blue. Mint is a fill with ink on it, the
+   same pair as the button (13.3:1); neither token changes with the theme, so one rule covers both. */
+::selection {
+  background: var(--mint);
+  color: var(--ink);
+}
+
 /* In the components layer, so utilities such as `hidden md:inline-flex` can override them. */
 @layer components {
   /* The one primary action: same look in both themes, so it is always recognisable. */
