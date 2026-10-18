@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { afterEach, beforeEach, test } from 'node:test';
+import { CURSOR_SCRIPT } from '../../src/layouts/cursor.ts';
 import { stamp } from './form.ts';
 import { type Env, handle } from './index.ts';
 
@@ -100,13 +102,39 @@ test('without Google configured, the page offers email instead of slots', async 
   assert.match(await res.text(), /hola@chambasimple\.com/);
 });
 
+const scriptSrcOf = (res: Response) =>
+  (res.headers.get('content-security-policy') ?? '')
+    .split('; ')
+    .find((d) => d.startsWith('script-src')) ?? '';
+
 test('the page lists free slots in the visitor’s time zone, with no-store and a strict CSP', async () => {
   const res = await handle(new Request('https://agenda.chambasimple.com/en'), env(), NOW);
   const body = await res.text();
   assert.equal(res.headers.get('cache-control'), 'no-store');
-  assert.match(res.headers.get('content-security-policy') ?? '', /script-src 'none'/);
+  assert.match(scriptSrcOf(res), /^script-src 'sha256-[^']+'$/, 'only the aura, and by hash');
   assert.match(body, new RegExp(`value="${SLOT}"`));
   assert.match(body, /lang="en"/);
+});
+
+test('the CSP allows the shared aura script by hash, with Turnstile as the only addition', async () => {
+  const hash = createHash('sha256').update(CURSOR_SCRIPT).digest('base64');
+  const off = await handle(new Request('https://agenda.chambasimple.com/'), env(), NOW);
+  assert.equal(scriptSrcOf(off), `script-src 'sha256-${hash}'`);
+  const on = await handle(
+    new Request('https://agenda.chambasimple.com/'),
+    env({ TURNSTILE_SITE_KEY: 'k' }),
+    NOW,
+  );
+  assert.equal(scriptSrcOf(on), `script-src 'sha256-${hash}' https://challenges.cloudflare.com`);
+});
+
+test('the booking page carries the aura layer, its script and the mint selection', async () => {
+  const body = await (
+    await handle(new Request('https://agenda.chambasimple.com/'), env(), NOW)
+  ).text();
+  assert.match(body, /<div id="aura" aria-hidden="true"><\/div>/);
+  assert.ok(body.includes(`<script>${CURSOR_SCRIPT}</script>`), 'the aura script is inline');
+  assert.match(body, /::selection\{background:var\(--mint\);color:var\(--ink\)\}/);
 });
 
 test('a valid booking creates one event with Meet and shows the confirmation', async () => {

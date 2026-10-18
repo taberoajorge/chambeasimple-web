@@ -2,6 +2,7 @@
 // grouped by day, in the visitor's time zone (Cloudflare tells us which). Everything that came
 // from a visitor is escaped before it is written into HTML.
 import type { AgendaText } from '../../src/content/agenda.ts';
+import { CURSOR_SCRIPT } from '../../src/layouts/cursor.ts';
 import { TOKENS } from './tokens.ts';
 
 const esc = (s: string) =>
@@ -36,16 +37,22 @@ textarea{min-height:7rem}input[aria-invalid=true],textarea[aria-invalid=true]{bo
 .trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
 button,.btn{display:inline-flex;min-height:48px;align-items:center;justify-content:center;border:0;border-radius:999px;background:var(--mint);color:var(--ink);font:inherit;font-weight:700;padding:0 1.75rem;margin-top:1.5rem;cursor:pointer;text-decoration:none}
 .alert{border-left:4px solid var(--accent);padding:.75rem 1rem;background:var(--card);margin-top:1.5rem}
-:focus-visible{outline:3px solid var(--accent);outline-offset:3px}`;
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+::selection{background:var(--mint);color:var(--ink)}
+#aura{display:none;position:fixed;top:0;left:0;z-index:31;width:32rem;height:32rem;border-radius:50%;background:radial-gradient(circle closest-side,var(--aura),transparent 65%);opacity:0;pointer-events:none;will-change:transform;transition:opacity .5s ease}
+@media(hover:hover) and (pointer:fine) and (min-width:768px){#aura{display:block}}
+#aura[data-on]{opacity:1}
+@media(prefers-reduced-motion:reduce){#aura{display:none}}`;
 
 type Shell = { t: AgendaText; title: string; body: string; site: string; turnstile?: string };
 
 // The header mirrors the site's: the same wordmark, the three section links and the language
 // switch, plus "Agenda una conversación" marked as the current page (we are already here). The
-// theme button is the site's only script and the agenda ships none, so it is left out. `site` is
-// the main site's origin (prod by default, the local site in dev), so the brand and favicon return
-// where the visitor came from. The language switch is relative, so local dev and previews never
-// jump to the published agenda.
+// theme button is left out (there is no theme switch here); the page's one script is the pointer
+// aura, shared with the site and allowed by its hash in `csp()` (index.ts). `site` is the main
+// site's origin (prod by default, the local site in dev), so the brand and favicon return where the
+// visitor came from. The language switch is relative, so local dev and previews never jump to the
+// published agenda.
 const shell = ({ t, title, body, site, turnstile }: Shell) => {
   // The wordmark is one flex child: as bare text + span, the topbar gap would split the word in two.
   const base = t.lang === 'en' ? '/en' : '/';
@@ -59,7 +66,7 @@ const shell = ({ t, title, body, site, turnstile }: Shell) => {
 <title>${esc(title)}</title><meta name="description" content="${esc(t.description)}">
 <meta name="robots" content="noindex"><link rel="icon" href="${esc(site)}/favicon.svg" type="image/svg+xml">
 <style>${CSS}</style>${turnstile ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' : ''}</head>
-<body><header><div class="topbar"><a class="brand" href="${home}"><svg aria-hidden="true" class="brand-mark" viewBox="0 0 74 74" fill="var(--mint)"><rect x="0" y="46" width="12" height="12" rx="2.4"/><rect x="14" y="60" width="14" height="14" rx="2.8"/><rect x="26" y="42" width="16" height="16" rx="3.2"/><rect x="39" y="22" width="18" height="18" rx="3.6"/><rect x="53" y="0" width="20" height="20" rx="4"/></svg><span>chamba<span>simple</span></span></a><nav class="nav" aria-label="${esc(t.nav.label)}"><ul>${links}</ul><span class="here" aria-current="page">${esc(t.nav.current)}</span><a class="lang" href="${es ? '/en' : '/'}" hreflang="${es ? 'en' : 'es'}" lang="${es ? 'en' : 'es'}"><span aria-hidden="true">${es ? 'EN' : 'ES'}</span><span class="sr">${esc(t.nav.switchTo)}</span></a></nav></div></header><main>${body}</main></body></html>`;
+<body><div id="aura" aria-hidden="true"></div><header><div class="topbar"><a class="brand" href="${home}"><svg aria-hidden="true" class="brand-mark" viewBox="0 0 74 74" fill="var(--mint)"><rect x="0" y="46" width="12" height="12" rx="2.4"/><rect x="14" y="60" width="14" height="14" rx="2.8"/><rect x="26" y="42" width="16" height="16" rx="3.2"/><rect x="39" y="22" width="18" height="18" rx="3.6"/><rect x="53" y="0" width="20" height="20" rx="4"/></svg><span>chamba<span>simple</span></span></a><nav class="nav" aria-label="${esc(t.nav.label)}"><ul>${links}</ul><span class="here" aria-current="page">${esc(t.nav.current)}</span><a class="lang" href="${es ? '/en' : '/'}" hreflang="${es ? 'en' : 'es'}" lang="${es ? 'en' : 'es'}"><span aria-hidden="true">${es ? 'EN' : 'ES'}</span><span class="sr">${esc(t.nav.switchTo)}</span></a></nav></div></header><main>${body}</main><script>${CURSOR_SCRIPT}</script></body></html>`;
 };
 
 export type Values = Partial<Record<'name' | 'company' | 'email' | 'need', string>>;
