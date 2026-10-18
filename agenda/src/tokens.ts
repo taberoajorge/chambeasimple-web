@@ -22,6 +22,10 @@ export const TOKENS = `:root {
   --band-text: #effbf6;
   --band-muted: #a3b8b0;
   --plate: #ffffff;
+  /* The pointer aura (src/layouts/cursor.ts): a decorative light, never text, so it stays out of
+     contrast.test.ts. Mint is the brand light: on the light page it is a faint mint haze, on the
+     ink-dark one a mint glow. Slightly stronger on light so it is perceptible. */
+  --aura: light-dark(rgb(98 240 187 / 0.3), rgb(98 240 187 / 0.26));
 }
 
 :root[data-theme="light"] {
