@@ -18,10 +18,14 @@
     // Turnstile widget "chambeasimple-agenda" (Managed mode). The site key is public; the secret is
     // TURNSTILE_SECRET.
     "TURNSTILE_SITE_KEY": "0x4AAAAAAFW5Q1ffISVM0M9j",
-    // Availability comes only from the hola@ account's own calendar: the owners block their time
-    // there. Emails go out through Resend, signed as chambasimple.com (agenda/src/mail.ts); the
-    // owners' notice goes to NOTIFY, a SimpleLogin alias that forwards to both mailboxes.
-    "PEOPLE": "hola@chambasimple.com",
+    // Availability is the union of every calendar listed here (plus the agenda's own): the studio's,
+    // where the owners block time off, and each owner's working calendar, shared to that account in
+    // Google Calendar as "see only free/busy" (freeBusy returns no titles and no guests). A busy
+    // block in any of them removes the slot. Adding a person is three steps: the mail alias in
+    // SimpleLogin, sharing their calendar, and their id in this list. docs/agenda.md has the rest.
+    "PEOPLE": "hola@chambasimple.com, sandra@chambasimple.com, alex@chambasimple.com, sandrarap.15@gmail.com, taberoa@pm.me",
+    // Emails go out through Resend, signed as chambasimple.com (agenda/src/mail.ts); the owners'
+    // notice goes to NOTIFY, a SimpleLogin alias that forwards to both mailboxes.
     "NOTIFY": "agenda@chambasimple.com",
     // The main site's origin: the brand, the favicon and the privacy link point there. In dev,
     // scripts/run.ts overrides it with the local site (so the header does not jump to production).

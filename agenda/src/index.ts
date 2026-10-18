@@ -21,7 +21,7 @@ export type Env = {
   GOOGLE_CLIENT_SECRET?: string;
   GOOGLE_REFRESH_TOKEN?: string;
   AGENDA_CALENDAR?: string;
-  PEOPLE?: string; // calendars checked for busy time, comma-separated (hola@)
+  PEOPLE?: string; // calendars checked for busy time, comma-separated (the studio's and the owners')
   NOTIFY?: string; // aliases invited to every booking so the owners get an email, comma-separated
   FORM_SECRET?: string;
   TURNSTILE_SITE_KEY?: string;
@@ -102,6 +102,10 @@ const html = (body: string, status: number, env: Env) =>
       'X-Robots-Tag': 'noindex',
     },
   });
+
+// No availability means no slots: the visitor gets the email instead of a guessed hour or a 500.
+const emailInstead = (t: AgendaText, env: Env, site: string) =>
+  html(closedPage(t, EMAIL, site), 200, env);
 
 // Busy blocks for the next weeks: cached 5 minutes for the page, fresh before booking.
 async function busyBlocks(g: Google, env: Env, now: number, fresh: boolean): Promise<Interval[]> {
@@ -188,7 +192,13 @@ async function submit(ctx: Ctx): Promise<Response> {
   if (!(await turnstileOk(env, String(form.get('cf-turnstile-response') ?? ''), ip)))
     return page(400, { error: t.errors.trap, from });
 
-  const offered = freeSlots(now, await busyBlocks(g, env, now, true));
+  let offered: number[];
+  try {
+    offered = freeSlots(now, await busyBlocks(g, env, now, true));
+  } catch {
+    // A calendar we cannot read again means the slot cannot be promised: offer the email instead.
+    return emailInstead(t, env, site);
+  }
   const read = await readForm(form, env.FORM_SECRET as string, now, offered);
   const values = Object.fromEntries(
     ['name', 'company', 'email', 'need'].map((k) => [k, String(form.get(k) ?? '')]),
@@ -228,16 +238,23 @@ async function handle(request: Request, env: Env, now: number): Promise<Response
   const t: AgendaText = AGENDA[lang];
   const g = google(env);
   const site = siteOf(env);
-  if (!g || !healthy) return html(closedPage(t, EMAIL, site), 200, env);
+  if (!g || !healthy) return emailInstead(t, env, site);
 
   const timeZone =
     (request as Request & { cf?: { timezone?: string } }).cf?.timezone ?? HOURS.timeZone;
   const privacy = `${site}${lang === 'es' ? '/privacidad' : '/en/privacy'}`;
-  const page = async (status: number, extra: Extra = {}) =>
-    html(
+  const page = async (status: number, extra: Extra = {}) => {
+    let slots: number[];
+    try {
+      slots = freeSlots(now, await busyBlocks(g, env, now, false));
+    } catch {
+      // One calendar we cannot read is enough: never offer an hour we could not verify.
+      return emailInstead(t, env, site);
+    }
+    return html(
       bookingPage({
         t,
-        slots: freeSlots(now, await busyBlocks(g, env, now, false)),
+        slots,
         timeZone,
         stamp: await stamp(env.FORM_SECRET as string, now),
         email: EMAIL,
@@ -249,6 +266,7 @@ async function handle(request: Request, env: Env, now: number): Promise<Response
       status,
       env,
     );
+  };
   return request.method === 'GET'
     ? page(200, { from: buttonFrom(url.searchParams.get('from')) })
     : submit({ request, env, now, g, t, lang, timeZone, site, page });
