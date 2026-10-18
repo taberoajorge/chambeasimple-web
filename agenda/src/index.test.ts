@@ -24,6 +24,8 @@ let googleUrls: string[] = [];
 let mails: { to: string[] }[] = [];
 let resendOk = true;
 let tokenOk = true;
+let busy: { start: string; end: string }[] = [];
+let busyOk = true;
 const realFetch = globalThis.fetch;
 beforeEach(() => {
   created = [];
@@ -31,13 +33,19 @@ beforeEach(() => {
   mails = [];
   resendOk = true;
   tokenOk = true;
+  busy = [];
+  busyOk = true;
   globalThis.fetch = (async (input: string | URL, init?: RequestInit) => {
     const url = String(input);
     if (url.includes('oauth2'))
       return new Response(JSON.stringify({ access_token: 'a' }), { status: tokenOk ? 200 : 400 });
     if (url.includes('freeBusy'))
       return new Response(
-        JSON.stringify({ calendars: { 'alex@x.pe': { busy: [] }, 'sandra@x.pe': { busy: [] } } }),
+        JSON.stringify(
+          busyOk
+            ? { calendars: { 'alex@x.pe': { busy }, 'sandra@x.pe': { busy: [] } } }
+            : { calendars: { 'taberoa@pm.me': { errors: [{ reason: 'notFound' }] } } },
+        ),
       );
     if (url.includes('api.resend.com')) {
       mails.push(JSON.parse(String(init?.body)));
@@ -114,6 +122,26 @@ test('the page lists free slots in the visitor’s time zone, with no-store and 
   assert.match(scriptSrcOf(res), /^script-src 'sha256-[^']+'$/, 'only the aura, and by hash');
   assert.match(body, new RegExp(`value="${SLOT}"`));
   assert.match(body, /lang="en"/);
+});
+
+test('a busy block in any configured calendar removes the slot', async () => {
+  busy = [{ start: '2026-10-20T15:00:00Z', end: '2026-10-20T15:30:00Z' }];
+  const body = await (
+    await handle(new Request('https://agenda.chambasimple.com/'), env(), NOW)
+  ).text();
+  assert.ok(!body.includes(`value="${SLOT}"`), 'the busy slot is gone');
+  assert.ok(body.includes(`value="${SLOT + 30 * 60_000}"`), 'the next one stays');
+});
+
+test('a calendar that cannot be read offers email, and never books on a guess', async () => {
+  busyOk = false;
+  const get = await handle(new Request('https://agenda.chambasimple.com/'), env(), NOW);
+  assert.equal(get.status, 200);
+  assert.match(await get.text(), /hola@chambasimple\.com/);
+  const posted = await post(env());
+  assert.equal(posted.status, 200);
+  assert.match(await posted.text(), /hola@chambasimple\.com/);
+  assert.equal(created.length, 0);
 });
 
 test('the CSP allows the shared aura script by hash, with Turnstile as the only addition', async () => {

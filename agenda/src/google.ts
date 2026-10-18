@@ -1,5 +1,5 @@
 // Google Calendar, with the least access that works (design.md, agenda-propia):
-// calendar.freebusy reads only busy blocks of the hola@ calendar (no titles, no guests);
+// calendar.freebusy reads only busy blocks of the configured calendars (no titles, no guests);
 // calendar.app.created writes only to the agenda's own secondary calendar.
 import type { Interval } from './slots.ts';
 
@@ -8,7 +8,7 @@ export type Google = {
   clientSecret: string;
   refreshToken: string;
   agendaCalendar: string; // id of the secondary calendar the app created
-  people: string[]; // calendars checked for busy blocks (hola@chambasimple.com)
+  people: string[]; // calendars checked for busy blocks: the studio's and the owners'
   // Who gets the invitation besides the visitor. Not the organizer itself: Google never emails an
   // event's own organizer, so the owners are notified through another alias that forwards to them.
   notify: string[];
