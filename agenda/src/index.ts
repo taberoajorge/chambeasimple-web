@@ -72,10 +72,14 @@ const mail = (env: Env): Mail | null =>
 
 const siteOf = (env: Env) => env.SITE ?? SITE;
 
+// The booking page's one script is the pointer aura (src/layouts/cursor.ts), allowed by the same
+// hash the site uses; Turnstile, when configured, is the only external script. Nothing else runs.
+const AURA = "'sha256-o/tESdse/Hhw1gQp316CExfyB1PqDjdzfcf9fIA8fd4='";
+
 const csp = (turnstile: boolean, site: string) =>
   [
     "default-src 'self'",
-    turnstile ? 'script-src https://challenges.cloudflare.com' : "script-src 'none'",
+    `script-src ${AURA}${turnstile ? ' https://challenges.cloudflare.com' : ''}`,
     turnstile ? 'frame-src https://challenges.cloudflare.com' : '',
     "style-src 'unsafe-inline'",
     `img-src 'self' ${site}`,
