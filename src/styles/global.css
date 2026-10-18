@@ -26,6 +26,10 @@
   --band-text: #effbf6;
   --band-muted: #a3b8b0;
   --plate: #ffffff;
+  /* The pointer aura (src/layouts/cursor.ts): a decorative light, never text, so it stays out of
+     contrast.test.ts. Mint is the brand light: on the light page it is a faint mint haze, on the
+     ink-dark one a mint glow. Slightly stronger on light so it is perceptible. */
+  --aura: light-dark(rgb(98 240 187 / 0.3), rgb(98 240 187 / 0.26));
 }
 
 :root[data-theme="light"] {
@@ -256,7 +260,42 @@ li:is(:hover, :focus-within) .avatar {
   filter: drop-shadow(0 0 0.45rem var(--mint));
 }
 
+/* The pointer aura: one fixed decorative layer the cursor script moves. Hidden unless it can run
+   (fine pointer, wide enough, JS on) and gone with reduced motion, so on touch and narrow screens it
+   never paints or listens. It rides above the content, the sticky header (z-30) and the sticky
+   section titles (z-20) so it is never cut off, but below the skip link (z-50): a light, not a veil
+   (low alpha, no events), and the script keeps the native cursor. */
+#aura {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 31;
+  width: 32rem;
+  height: 32rem;
+  border-radius: 50%;
+  background: radial-gradient(circle closest-side, var(--aura), transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 0.5s ease;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+  :root[data-js] #aura {
+    display: block;
+  }
+}
+
+#aura[data-on] {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  #aura {
+    display: none;
+  }
+
   .avatar,
   .avatar-photo,
   .brand-mark {

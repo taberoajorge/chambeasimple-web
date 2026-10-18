@@ -2,6 +2,7 @@
 import type { Content } from '../content/es.ts';
 import { book, invoicing, type Lang, PATHS, SITE } from '../content/site.ts';
 import '../styles/global.css';
+import { CURSOR_SCRIPT } from './cursor.ts';
 import { THEME_SCRIPT } from './theme.ts';
 
 interface Props {
@@ -45,6 +46,8 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   </head>
   <body class="bg-bg font-sans text-text antialiased">
+    <!-- Decorative: the pointer aura the cursor script moves (see global.css and ./cursor.ts). -->
+    <div id="aura" aria-hidden="true"></div>
     <a
       href="#contenido"
       class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-surface focus:p-3"
@@ -155,5 +158,6 @@ const markdown = paths[lang] === '/' ? '/index.md' : `${paths[lang]}.md`;
         >{t.cta.primary}</a
       >
     </div>
+    <script is:inline set:html={CURSOR_SCRIPT} />
   </body>
 </html>
