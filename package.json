@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",
-    "astro": "7.3.8"
+    "astro": "7.4.0"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
@@ -38,10 +38,10 @@
     "@tailwindcss/vite": "4.3.3",
     "@types/node": "24.19.2",
     "chrome-launcher": "1.2.2",
-    "knip": "6.41.0",
+    "knip": "6.42.0",
     "lighthouse": "13.5.0",
     "tailwindcss": "4.3.3",
     "typescript": "6.0.3",
-    "wrangler": "4.151.0"
+    "wrangler": "4.151.1"
   }
 }
