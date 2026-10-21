@@ -36,7 +36,7 @@
     "@astrojs/check": "0.9.10",
     "@biomejs/biome": "2.5.15",
     "@tailwindcss/vite": "4.3.3",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.5",
     "chrome-launcher": "1.2.2",
     "knip": "6.41.0",
     "lighthouse": "13.5.0",
